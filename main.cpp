@@ -20,11 +20,17 @@ void merge_sort_helper(my_int_type* a, mai_type left, mai_type right);
 void merge_sort_merge(my_int_type* a, mai_type left, mai_type mid,
 		      mai_type right);
 void quick_sort_ex_4(my_int_type* array_input, mai_type length);
+void quick_sort_ex_4_helper(my_int_type* a, mai_type left, mai_type right);
+mai_type quick_sort_ex_4_partion(my_int_type* a, mai_type left, mai_type right);
+
 void quick_sort_in_5(my_int_type* array_input, mai_type length);
+void quick_sort_in_5_helper(my_int_type* a, mai_type left, mai_type right);
+mai_type quick_sort_in_5_partion(my_int_type* a, mai_type left, mai_type right);
 
 int main()
 {
 	std::clock_t start;
+	srand(time(NULL));
 	double duration;
 
 	start = std::clock();
@@ -186,9 +192,58 @@ void merge_sort_merge(my_int_type* a, mai_type left, mai_type mid,
 
 void quick_sort_ex_4(my_int_type* array_input, mai_type length)
 {
-	bubble_sort_0(array_input, length);
+	quick_sort_ex_4_helper(array_input, 0, length - 1);
 }
+
+void quick_sort_ex_4_helper(my_int_type* a, mai_type left, mai_type right)
+{
+	if (left >= right) return;
+	mai_type pivot = quick_sort_ex_4_partion(a, left, right);
+	quick_sort_ex_4_helper(a, left, pivot - 1);
+	quick_sort_ex_4_helper(a, pivot + 1, right);
+}
+
+mai_type quick_sort_ex_4_partion(my_int_type* a, mai_type left, mai_type right)
+{
+	my_int_type* temp = new my_int_type[right - left + 1];
+
+	mai_type chosen_one_pos = rand() % (right - left + 1) + left;
+
+	my_int_type chosen_one_value = a[chosen_one_pos];
+
+	mai_type temp_i = 0;
+	mai_type temp_i_minus = right - left;
+
+	for (mai_type i = left; i < right + 1; i++) {
+		if (i == chosen_one_pos) {
+			continue;
+		}
+		if (a[i] < chosen_one_value) {
+			temp[temp_i++] = a[i];
+		} else {
+			temp[temp_i_minus--] = a[i];
+		}
+	}
+
+	temp[temp_i] = chosen_one_value;
+
+	assert(temp_i == temp_i_minus);
+
+	for (mai_type i = 0; i < right - left + 1; i++) {
+		a[left + i] = temp[i];
+	}
+
+	delete[] temp;
+
+	return (left + temp_i);
+}
+
 void quick_sort_in_5(my_int_type* array_input, mai_type length)
 {
-	bubble_sort_0(array_input, length);
+	// quick_sort_in_5_helper(array_input, 0, length - 1);
+	selection_sort_2(array_input, length);
+}
+
+void quick_sort_ex_5_helper(my_int_type* a, mai_type left, mai_type right)
+{
 }
