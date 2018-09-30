@@ -16,6 +16,9 @@ void bubble_sort_0(my_int_type* array_input, mai_type length);
 void insertion_sort_1(my_int_type* array_input, mai_type length);
 void selection_sort_2(my_int_type* array_input, mai_type length);
 void merge_sort_3(my_int_type* array_input, mai_type length);
+void merge_sort_helper(my_int_type* a, mai_type left, mai_type right);
+void merge_sort_merge(my_int_type* a, mai_type left, mai_type mid,
+		      mai_type right);
 void quick_sort_ex_4(my_int_type* array_input, mai_type length);
 void quick_sort_in_5(my_int_type* array_input, mai_type length);
 
@@ -43,10 +46,6 @@ int main()
 		if (i >= line_num) {
 			break;
 		}
-	}
-
-	for (mai_type i = 0; i < line_num; i++) {
-		cout << "myarray[" << i << "]: " << my_array[i] << endl;
 	}
 
 	// sorting begins
@@ -78,9 +77,15 @@ int main()
 		}
 	}
 
+	/*
 	for (mai_type i = 0; i < line_num; i++) {
 		if (i == 0) cout << "sorted\n";
 		cout << "myarray[" << i << "]: " << my_array[i] << endl;
+	}
+	*/
+
+	for (mai_type i = 0; i < line_num; i++) {
+		cout << my_array[i] << endl;
 	}
 
 	// NOTE: deleted 1
@@ -136,8 +141,49 @@ void selection_sort_2(my_int_type* array_input, mai_type length)
 }
 void merge_sort_3(my_int_type* array_input, mai_type length)
 {
-	bubble_sort_0(array_input, length);
+	merge_sort_helper(array_input, 0, length - 1);
 }
+
+void merge_sort_helper(my_int_type* a, mai_type left, mai_type right)
+{
+	if (left >= right) return;
+	my_int_type mid = (left + right) / 2;
+	merge_sort_helper(a, left, mid);
+	merge_sort_helper(a, mid + 1, right);
+	merge_sort_merge(a, left, mid, right);
+}
+void merge_sort_merge(my_int_type* a, mai_type left, mai_type mid,
+		      mai_type right)
+{
+	my_int_type* temp = new my_int_type[right - left + 1];
+	mai_type i = 0;
+	mai_type j = 0;
+	mai_type k = 0;
+
+	mai_type first_lengh = mid - left + 1;
+	mai_type second_lengh = right - mid;
+	while ((i < first_lengh) && (j < second_lengh)) {
+		if (a[left + i] <= a[mid + 1 + j]) {
+			temp[k++] = a[left + i++];
+		} else {
+			temp[k++] = a[mid + 1 + j++];
+		}
+	}
+
+	while (i < first_lengh) {
+		temp[k++] = a[left + i++];
+	}
+
+	while (j < second_lengh) {
+		temp[k++] = a[mid + 1 + j++];
+	}
+
+	for (mai_type i = 0; i < k; i++) {
+		a[left + i] = temp[i];
+	}
+	delete[] temp;
+}
+
 void quick_sort_ex_4(my_int_type* array_input, mai_type length)
 {
 	bubble_sort_0(array_input, length);

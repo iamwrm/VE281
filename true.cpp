@@ -44,16 +44,18 @@ int main()
 		}
 	}
 
-	for (mai_type i = 0; i < line_num; i++) {
-		cout << "myarray[" << i << "]: " << my_array[i] << endl;
-	}
-
 	// sorting begins
 	std::sort(my_array, my_array + line_num);
 
+	/*
 	for (mai_type i = 0; i < line_num; i++) {
 		if (i == 0) cout << "sorted\n";
 		cout << "myarray[" << i << "]: " << my_array[i] << endl;
+	}
+	*/
+
+	for (mai_type i = 0; i < line_num; i++) {
+		cout << my_array[i] << endl;
 	}
 
 	// NOTE: deleted 1
