@@ -122,7 +122,17 @@ void insertion_sort_1(my_int_type* array_input, mai_type length)
 }
 void selection_sort_2(my_int_type* array_input, mai_type length)
 {
-	bubble_sort_0(array_input, length);
+	for (mai_type i = 0; i < length - 1; i++) {
+		mai_type Min = i;
+		for (mai_type j = i + 1; j < length; j++) {
+			if (array_input[j] < array_input[Min]) {
+				Min = j;
+			}
+		}
+		if (Min != i) {
+			swap(array_input[i], array_input[Min]);
+		}
+	}
 }
 void merge_sort_3(my_int_type* array_input, mai_type length)
 {
