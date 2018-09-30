@@ -240,10 +240,37 @@ mai_type quick_sort_ex_4_partion(my_int_type* a, mai_type left, mai_type right)
 
 void quick_sort_in_5(my_int_type* array_input, mai_type length)
 {
-	// quick_sort_in_5_helper(array_input, 0, length - 1);
-	selection_sort_2(array_input, length);
+	quick_sort_in_5_helper(array_input, 0, length - 1);
 }
 
-void quick_sort_ex_5_helper(my_int_type* a, mai_type left, mai_type right)
+void quick_sort_in_5_helper(my_int_type* a, mai_type left, mai_type right)
 {
+	if (left >= right) return;
+	mai_type pivot = quick_sort_in_5_partion(a, left, right);
+	quick_sort_in_5_helper(a, left, pivot - 1);
+	quick_sort_in_5_helper(a, pivot + 1, right);
+}
+
+mai_type quick_sort_in_5_partion(my_int_type* a, mai_type left, mai_type right)
+{
+	mai_type chosen_one_pos = rand() % (right - left + 1) + left;
+	my_int_type chosen_one_value = a[chosen_one_pos];
+
+	auto temp_v = a[left];
+	swap(a[left], a[chosen_one_pos]);
+
+	mai_type i = left;
+	mai_type j = right;
+
+	while (i < j) {
+		for (; a[i] >= chosen_one_value; i++)
+			;
+		for (; a[j] < chosen_one_value; j--)
+			;
+		swap(a[i], a[j]);
+	}
+
+	swap(a[left], a[j]);
+
+	return j;
 }
