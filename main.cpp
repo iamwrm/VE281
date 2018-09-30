@@ -256,21 +256,21 @@ mai_type quick_sort_in_5_partion(my_int_type* a, mai_type left, mai_type right)
 	mai_type chosen_one_pos = rand() % (right - left + 1) + left;
 	my_int_type chosen_one_value = a[chosen_one_pos];
 
-	auto temp_v = a[left];
 	swap(a[left], a[chosen_one_pos]);
 
-	mai_type i = left;
-	mai_type j = right;
+	auto i = left;
+	auto j = left + 1;
 
-	while (i < j) {
-		for (; a[i] >= chosen_one_value; i++)
-			;
-		for (; a[j] < chosen_one_value; j--)
-			;
-		swap(a[i], a[j]);
+	while (j < right + 1) {
+		if (a[j] >= chosen_one_value) {
+		} else {
+			i++;
+			swap(a[i], a[j]);
+		}
+		j++;
 	}
 
-	swap(a[left], a[j]);
+	swap(a[left], a[i]);
 
-	return j;
+	return i;
 }

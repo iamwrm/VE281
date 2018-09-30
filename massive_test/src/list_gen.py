@@ -1,6 +1,6 @@
 import random
 
-line_count = 10
+line_count = 300
 
 for i in range(6):
     for j in range(1):
