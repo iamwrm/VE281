@@ -79,7 +79,7 @@ int main()
 	}
 
 	for (mai_type i = 0; i < line_num; i++) {
-		if (i == 0) cout << "sorted";
+		if (i == 0) cout << "sorted\n";
 		cout << "myarray[" << i << "]: " << my_array[i] << endl;
 	}
 
@@ -89,14 +89,40 @@ int main()
 
 	duration = (std::clock() - start) / (double)CLOCKS_PER_SEC;
 
-	std::cout << "printf: " << duration << '\n';
+	// std::cout << "printf: " << duration << '\n';
 
 	return 0;
 }
 
-void bubble_sort_0(my_int_type* array_input, mai_type length){}
-void insertion_sort_1(my_int_type* array_input, mai_type length){}
-void selection_sort_2(my_int_type* array_input, mai_type length){}
-void merge_sort_3(my_int_type* array_input, mai_type length){}
-void quick_sort_ex_4(my_int_type* array_input, mai_type length){}
-void quick_sort_in_5(my_int_type* array_input, mai_type length){}
+void bubble_sort_0(my_int_type* array_input, mai_type length)
+{
+	for (mai_type i = 0; i < length; i++) {
+		for (mai_type j = 0; j < length - 1; j++) {
+			if (array_input[j] > array_input[j + 1]) {
+				my_int_type temp = array_input[j];
+				array_input[j] = array_input[j + 1];
+				array_input[j + 1] = temp;
+			}
+		}
+	}
+}
+void insertion_sort_1(my_int_type* array_input, mai_type length)
+{
+	bubble_sort_0(array_input, length);
+}
+void selection_sort_2(my_int_type* array_input, mai_type length)
+{
+	bubble_sort_0(array_input, length);
+}
+void merge_sort_3(my_int_type* array_input, mai_type length)
+{
+	bubble_sort_0(array_input, length);
+}
+void quick_sort_ex_4(my_int_type* array_input, mai_type length)
+{
+	bubble_sort_0(array_input, length);
+}
+void quick_sort_in_5(my_int_type* array_input, mai_type length)
+{
+	bubble_sort_0(array_input, length);
+}
