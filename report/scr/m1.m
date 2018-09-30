@@ -1,0 +1,1 @@
+t0 = fscanf('/output/m0.txt','r')
