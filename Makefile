@@ -6,4 +6,5 @@ test: all
 	python3 massive_test/src/list_gen.py
 	python3 massive_test/src/list_run.py
 	python3 massive_test/src/list_diff.py
-	
+tar: all
+	tar -cvzf oh1.tar Makefile main.cpp

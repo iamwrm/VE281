@@ -1,9 +1,9 @@
 import random
 
-line_count = 300
+line_count = 1000
 
 for i in range(6):
-    for j in range(1):
+    for j in range(10):
         outfile = open('massive_test/input/t'+str(i)+str(j)+'.txt', 'w')
         outfile.write(str(i)+"\n")
         outfile.write(str(line_count)+"\n")
