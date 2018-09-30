@@ -108,7 +108,17 @@ void bubble_sort_0(my_int_type* array_input, mai_type length)
 }
 void insertion_sort_1(my_int_type* array_input, mai_type length)
 {
-	bubble_sort_0(array_input, length);
+	mai_type i = 1;
+	while (i < length) {
+		mai_type j = i;
+		while ((j > 0) && (array_input[j - 1] > array_input[j])) {
+			my_int_type temp = array_input[j];
+			array_input[j] = array_input[j - 1];
+			array_input[j - 1] = temp;
+			j--;
+		}
+		i++;
+	}
 }
 void selection_sort_2(my_int_type* array_input, mai_type length)
 {

@@ -1,6 +1,6 @@
 import random
 
-line_count = 10000
+line_count = 20
 
 for i in range(6):
     for j in range(1):
