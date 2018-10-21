@@ -9,6 +9,21 @@
 
 using namespace std;
 
+void insertion_sort_1(int* array_input, int length)
+{
+	int i = 1;
+	while (i < length) {
+		int j = i;
+		while ((j > 0) && (array_input[j - 1] > array_input[j])) {
+			int temp = array_input[j];
+			array_input[j] = array_input[j - 1];
+			array_input[j - 1] = temp;
+			j--;
+		}
+		i++;
+	}
+}
+
 int my_partition1(int* a, int n, int chosen_one_pos)
 {
 	int left = 0;
@@ -45,17 +60,31 @@ int rand_linear_sort(int* A, int n, int i)
 		return rand_linear_sort(A + j + 1, n - j - 1, i - j - 1);
 }
 
-int deter_linear_sort(int* A, int n, int i)
+void medians(int A[], int n)
+{
+	int cnt = 0;
+	for (int i = 0; i + 5 < n; i += 5) {
+		insertion_sort_1(A + i, 5);
+		swap(A[cnt++], A[i + 2]);
+	}
+}
+
+int deter_linear_sort(int A[], int n, int k)
 {
 	if (n == 1) return A[0];
-	int j = rand() % (n);
-	if (j == i) return A[j];
-	if (j > i)
-		return rand_linear_sort(A, j - 1, i);
+	if (n <= 5) {
+		insertion_sort_1(A, n);
+		return A[k];
+	}
+	medians(A, n);
+	deter_linear_sort(A, n / 5, n / 10);
+	int p = n / 10;
+	int j = my_partition1(A, n, p);
+	if (j == k) return A[j];
+	if (j > k)
+		return deter_linear_sort(A, j, k);
 	else
-		return rand_linear_sort(A + j + 1, n - j, i - j);
-
-	return 0;
+		return deter_linear_sort(A + j + 1, n - j - 1, k - j - 1);
 }
 
 int main(int argc, char const* argv[])
