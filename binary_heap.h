@@ -126,10 +126,10 @@ void binary_heap<TYPE,COMP>::percolateDown(int id)
 	auto size = data.size();
 	auto &heap = data;
 	for (auto j = 2 * id+1; j <= size; j = 2 * id+1) {
-		if (j < size && !compare(heap[j],heap[j + 1])) {
+		if (j < size && compare(heap[j + 1],heap[j])) {
 			j++;
 		}
-		if (compare(heap[id], heap[j])) break;
+		if (!compare(heap[j],heap[id])) break;
 		std::swap(heap[id], heap[j]);
 		id = j;
 	}
