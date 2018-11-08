@@ -60,25 +60,55 @@ unsorted_heap<TYPE, COMP> :: unsorted_heap(COMP comp) {
 template<typename TYPE, typename COMP>
 void unsorted_heap<TYPE, COMP> :: enqueue(const TYPE &val) {
     // Fill in the body.
+    data.emplace_back(val);
 }
 
-template<typename TYPE, typename COMP>
-TYPE unsorted_heap<TYPE, COMP> :: dequeue_min() {
-    // Fill in the body.
+template <typename TYPE, typename COMP>
+TYPE unsorted_heap<TYPE, COMP>::dequeue_min()
+{
+	auto min_it = data.begin();
+	if (data.size() < 1) {
+		exit(-1);
+	}
+	TYPE min_val = data[0];
+	for (auto it = data.begin(); it != data.end(); it++) {
+		// if (!compare(min_val, *it)) {
+		if (compare(*it, min_val)) {
+			min_val = *(it);
+			min_it = it;
+		}
+	}
+	data.erase(min_it);
+	return min_val;
 }
 
-template<typename TYPE, typename COMP>
-const TYPE &unsorted_heap<TYPE, COMP> :: get_min() const {
-    // Fill in the body.
+template <typename TYPE, typename COMP>
+const TYPE &unsorted_heap<TYPE, COMP>::get_min() const
+{
+	// Fill in the body.
+	auto min_it = data.begin();
+	if (data.size() < 1) {
+		exit(-1);
+	}
+	TYPE min_val = data[0];
+	for (auto it = data.begin(); it != data.end(); it++) {
+		if (compare(*it, min_val)) {
+			min_val = *(it);
+			min_it = it;
+		}
+	}
+	return min_val;
 }
 
 template<typename TYPE, typename COMP>
 bool unsorted_heap<TYPE, COMP> :: empty() const {
     // Fill in the body.
+    return (data.size()<1);
 }
 
 template<typename TYPE, typename COMP>
 unsigned unsorted_heap<TYPE, COMP> :: size() const { 
+    return data.size();
     // Fill in the body.
 }
 
