@@ -1,13 +1,16 @@
 #include "util.h"
 
-void get_ops(int argc, char **argv, int &verbose_flag, std::string &method_name)
+void Interface_Property::get_ops(int argc, char **argv)
+// void get_ops(int argc, char **argv, int &verbose_flag, std::string
+// &method_name)
 {
 	int c;
 
 	while (1) {
 		static struct option long_options[] = {
 		    /* These options set a flag. */
-		    {"verbose", no_argument, &verbose_flag, 1},
+		    //{"verbose", no_argument, &verbose_flag, 1},
+		    {"verbose", no_argument, 0, 'v'},
 		    /* These options don’t set a flag.
 		       We distinguish them by their indices. */
 		    {"implementation", required_argument, 0, 'i'},
@@ -15,7 +18,7 @@ void get_ops(int argc, char **argv, int &verbose_flag, std::string &method_name)
 		/* getopt_long stores the option index here. */
 		int option_index = 0;
 
-		c = getopt_long(argc, argv, "i:", long_options, &option_index);
+		c = getopt_long(argc, argv, "vi:", long_options, &option_index);
 
 		/* Detect the end of the options. */
 		if (c == -1) break;
@@ -36,6 +39,11 @@ void get_ops(int argc, char **argv, int &verbose_flag, std::string &method_name)
 				// printf("option -i with value `%s'\n",
 				// optarg);
 				method_name = optarg;
+				break;
+			case 'v':
+				// printf("option -i with value `%s'\n",
+				// optarg);
+				verbose_flag = 1;
 				break;
 			case '?':
 				/* getopt_long already printed an error message.

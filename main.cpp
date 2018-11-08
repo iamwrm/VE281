@@ -19,11 +19,12 @@ int main(int argc, char **argv)
 	// get verbose_flag and method_name ===========
 	int verbose_flag = 0;
 	std::string method_name;
-	get_ops(argc, argv, verbose_flag, method_name);
+	Interface_Property interface_property(argc, argv);
 	// ============================================
 
-	if (verbose_flag) puts("verbose flag is set");
-	std::cout << "method chosen:" << method_name << std::endl;
+	if (interface_property.get_verbose_flag()) puts("verbose flag is set");
+	std::cout << "method chosen:" << interface_property.get_method_name()
+		  << std::endl;
 
 	return 0;
 }

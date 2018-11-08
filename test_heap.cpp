@@ -39,6 +39,7 @@ int main(int argc, char* argv[])
 	for (i = 0; i < size; i++) cout << a[i] << " " << flush;
 	cout << endl;
 
+
 	// We define a priority queue on int with the comparison functor as
 	// compare_t defined above. For this queue, the larger the int value is,
 	// the less prior it is.
