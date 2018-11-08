@@ -3,8 +3,11 @@
 #include <iostream>
 #include <string>
 
-#include "util.h"
+#include <deque>
+#include <list>
+#include <vector>
 
+#include "util.h"
 
 int main(int argc, char **argv)
 {
@@ -22,5 +25,5 @@ int main(int argc, char **argv)
 	if (verbose_flag) puts("verbose flag is set");
 	std::cout << "method chosen:" << method_name << std::endl;
 
-return 0;
+	return 0;
 }
