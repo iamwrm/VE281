@@ -62,31 +62,32 @@ template<typename TYPE, typename COMP>
 void binary_heap<TYPE, COMP> :: enqueue(const TYPE &val) {
 	data.push_back(val);
 	int pos = data.size() - 1;
-    // per up
+	// per up
 	while (pos > 0 && (compare(data[pos], data[pos / 2]))) {
 		std::swap(data[pos], data[pos / 2]);
 		pos = pos / 2;
 	}
 
-	using namespace std;
-	int a = 0;
-	int b = 1;
-	for (auto it = data.begin(); it != data.end(); it++) {
-		cout << *(it) << "\t";
-		a++;
-		if (a >= b) {
-			cout << endl;
-			a = 0;
-			b = b << 1;
-		}
+	if (0) {
+		using namespace std;
+		int a = 0;
+		int b = 1;
+		for (auto it = data.begin(); it != data.end(); it++) {
+			cout << *(it) << "\t";
+			a++;
+			if (a >= b) {
+				cout << endl;
+				a = 0;
+				b = b << 1;
+			}
 		}
 		cout << endl;
 		cout << endl;
+	}
 }
 
 template<typename TYPE, typename COMP>
 TYPE binary_heap<TYPE, COMP> :: dequeue_min() {
-    // Fill in the body.
     if (!this->empty()) {
 	    auto datum_poped = data[0];
 	    auto datum_last = *(data.end()-1);
@@ -101,7 +102,6 @@ TYPE binary_heap<TYPE, COMP> :: dequeue_min() {
 
 template<typename TYPE, typename COMP>
 const TYPE &binary_heap<TYPE, COMP> :: get_min() const {
-    // Fill in the body.
     if (!this->empty()) {
 	    auto datum_poped = data[0];
 	    return datum_poped;
@@ -112,13 +112,11 @@ const TYPE &binary_heap<TYPE, COMP> :: get_min() const {
 
 template<typename TYPE, typename COMP>
 bool binary_heap<TYPE, COMP> :: empty() const {
-    // Fill in the body.
     return (data.size()<1);
 }
 
 template<typename TYPE, typename COMP>
 unsigned binary_heap<TYPE, COMP> :: size() const { 
-    // Fill in the body.
     return data.size();
 }
 
@@ -127,11 +125,11 @@ void binary_heap<TYPE,COMP>::percolateDown(int id)
 {
 	auto size = data.size();
 	auto &heap = data;
-	for (auto j = 2 * id; j <= size; j = 2 * id) {
-		if (j < size && (heap[j] > heap[j + 1])) {
+	for (auto j = 2 * id+1; j <= size; j = 2 * id+1) {
+		if (j < size && !compare(heap[j],heap[j + 1])) {
 			j++;
 		}
-		if (heap[id] <= heap[j]) break;
+		if (compare(heap[id], heap[j])) break;
 		std::swap(heap[id], heap[j]);
 		id = j;
 	}
