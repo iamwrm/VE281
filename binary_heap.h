@@ -60,16 +60,14 @@ binary_heap<TYPE, COMP> :: binary_heap(COMP comp) {
 
 template<typename TYPE, typename COMP>
 void binary_heap<TYPE, COMP> :: enqueue(const TYPE &val) {
-	// Fill in the body.
 	data.push_back(val);
-	int pos = data.size()-1;
-	//for (; (pos > 1) && (this->compare(data[pos / 2], data[pos]) < 0);
-	     //pos = pos / 2) {
-	while (pos > 0 && (compare(data[pos / 2], data[pos]))) {
+	int pos = data.size() - 1;
+    // per up
+	while (pos > 0 && (compare(data[pos], data[pos / 2]))) {
 		std::swap(data[pos], data[pos / 2]);
-        pos=pos/2;
-		// data[pos]= data[pos / 2];
+		pos = pos / 2;
 	}
+
 	using namespace std;
 	int a = 0;
 	int b = 1;
@@ -81,9 +79,9 @@ void binary_heap<TYPE, COMP> :: enqueue(const TYPE &val) {
 			a = 0;
 			b = b << 1;
 		}
-	}
-	cout << endl;
-	cout << endl;
+		}
+		cout << endl;
+		cout << endl;
 }
 
 template<typename TYPE, typename COMP>
@@ -91,12 +89,10 @@ TYPE binary_heap<TYPE, COMP> :: dequeue_min() {
     // Fill in the body.
     if (!this->empty()) {
 	    auto datum_poped = data[0];
-	    auto datum_last = *(data.end());
+	    auto datum_last = *(data.end()-1);
         data[0]=datum_last;
-	    data.erase(data.end());
-        // TODO: perculate down
+	    data.erase(data.end()-1);
         percolateDown(0);
-
 	    return datum_poped;
     } else {
 	    assert(-1);
@@ -108,7 +104,6 @@ const TYPE &binary_heap<TYPE, COMP> :: get_min() const {
     // Fill in the body.
     if (!this->empty()) {
 	    auto datum_poped = data[0];
-	    // data.erase(data.begin());
 	    return datum_poped;
     } else {
 	    assert(-1);
@@ -131,9 +126,11 @@ template<typename TYPE, typename COMP>
 void binary_heap<TYPE,COMP>::percolateDown(int id)
 {
 	auto size = data.size();
-	auto & heap  = data;
+	auto &heap = data;
 	for (auto j = 2 * id; j <= size; j = 2 * id) {
-		if (j < size && heap[j] > heap[j + 1]) j++;
+		if (j < size && (heap[j] > heap[j + 1])) {
+			j++;
+		}
 		if (heap[id] <= heap[j]) break;
 		std::swap(heap[id], heap[j]);
 		id = j;
