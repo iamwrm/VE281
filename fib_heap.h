@@ -107,37 +107,47 @@ void fib_heap<TYPE, COMP>::make_son(Node<TYPE> *new_father, Node<TYPE> *new_son)
 template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::consolidate()
 {
-	std::vector<Node<TYPE> *> A(size_p, NULL);
-
-	for (auto w = root_list.begin(); w != root_list.end(); w++) {
-		Node<TYPE> *x = *w;
-		auto &d = x->degree;
-		while (A[d] != NULL) {
-			Node<TYPE> *y = A[d];
-			if (!compare(x->key, y->key)) {
-				std::swap(x, y);
+	std::vector<Node<TYPE> *> A(size_p + 1);
+	for (int i = 0; i < size_p; i++) {
+		A[i] = NULL;
+	}
+	if (!root_list.empty()) {
+		for (int w = 0; w < root_list.size(); w++) {
+			Node<TYPE> *x = root_list[w];
+			// int &d = x->degree;
+			int d;
+			if (x->son == NULL) {
+				d = 0;
+			} else {
+				d = x->son->size();
 			}
-			link(y, x);
-			A[d] = NULL;
-			d++;
+			while (A[d] != NULL) {
+				Node<TYPE> *y = A[d];
+				if (compare(x->key, y->key)) {
+					std::swap(x, y);
+				}
+				link(y, x);
+				A[d] = NULL;
+				x->degree++;
+			}
+			A[d] = x;
 		}
-		A[d] = x;
 	}
 	min_node = NULL;
 	for (int i = 0; i < size_p; i++) {
 		if (A[i] != NULL) {
 			if (min_node == NULL) {
-				root_list.clear();
 				root_list.emplace_back(A[i]);
 				min_node = A[i];
 			} else {
 				root_list.emplace_back(A[i]);
-				if (compare(A[i]->key, min_node->key)) {
+				if (!compare(A[i]->key, min_node->key)) {
 					min_node = A[i];
 				}
 			}
 		}
 	}
+	assert((min_node != NULL)&&(size_p>0));
 }
 
 /*
@@ -206,11 +216,13 @@ void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
 		min_node = x;
 	} else {
 		root_list.emplace_back(x);
-		if (compare(x->key, min_node->key)) {
+		if (!compare(x->key, min_node->key)) {
 			min_node = x;
 		}
 	}
 	size_p++;
+	consolidate();
+	std::cout << min_node->key << std::endl;
 }
 
 template <typename TYPE, typename COMP>
@@ -218,9 +230,15 @@ TYPE fib_heap<TYPE, COMP>::dequeue_min()
 {
 	Node<TYPE> *z = min_node;
 	if (min_node != NULL) {
-		for (auto x = z->son->begin(); x != z->son->end(); x++) {
-			root_list.emplace_back(*x);
-			(*x)->father = NULL;
+		if (z->son != NULL) {
+			for (auto x = z->son->begin(); x != z->son->end();
+			     x++) {
+				root_list.emplace_back(*x);
+				(*x)->father = NULL;
+				z->degree--;
+			}
+			delete z->son;
+			z->son = NULL;
 		}
 
 		auto itz = find(root_list.begin(), root_list.end(), z);
@@ -229,18 +247,23 @@ TYPE fib_heap<TYPE, COMP>::dequeue_min()
 			itzr = root_list.begin();
 		}
 		int flag = 0;
-		if (*itz == *(itzr)) {
+
+		auto d_z = itz - root_list.begin();
+		auto d_zr = itzr - root_list.begin();
+		if (d_z == d_zr) {
 			flag = 1;
 		}
 		root_list.erase(itz);
-		if (flag) {
+		if (size_p<=1) {
 			min_node = NULL;
 		} else {
 			min_node = *itzr;
 			consolidate();
 		}
 		size_p--;
+		assert((min_node != NULL)&&(size_p>0));
 	}
+
 	auto z_key = z->key;
 	delete z;
 	return z_key;
