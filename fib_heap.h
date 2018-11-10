@@ -116,6 +116,8 @@ void fib_heap<TYPE, COMP>::consolidate()
 	if (1) {
 		while (1) {
 			while (1) {
+				assert(current_point_1->father == NULL);
+
 				int son_num = current_point_1->degree;
 				if (!v1[son_num]) {
 					v1[son_num] = current_point_1;
@@ -132,18 +134,17 @@ void fib_heap<TYPE, COMP>::consolidate()
 						make_son(current_point_1,
 							 that_node);
 						v1[son_num] = NULL;
-						print_all();
 
 					} else {
-						that_node->left->right =
-						    that_node->right;
-						that_node->right->left =
-						    that_node->left;
-
-						make_son(current_point_1,
-							 that_node);
+						// current be son
+						current_point_1->left->right =
+						    current_point_1->right;
+						current_point_1->right->left =
+						    current_point_1->left;
+						make_son(that_node,
+							 current_point_1);
 						v1[son_num] = NULL;
-						print_all();
+						current_point_1 = that_node;
 					}
 				}
 			}
@@ -189,7 +190,7 @@ void fib_heap<TYPE, COMP>::print_all()
 				if (current_point->son) {
 					std::cout << "[";
 					print_all_helper(current_point->son);
-					std::cout << "]  ";
+					std::cout << "]\n";
 				} else {
 					std::cout << " ";
 				}
@@ -248,7 +249,7 @@ void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
 
 	consolidate();
 
-	// print_all();
+	print_all();
 }
 
 template <typename TYPE, typename COMP>
@@ -268,15 +269,41 @@ TYPE fib_heap<TYPE, COMP>::dequeue_min()
 	// size_p >0
 	size_p--;
 	root_size--;
-	auto *min_node_left = min_node->left;
-	auto *min_node_right = min_node->right;
-	min_node_left->right = min_node_right;
-	min_node_right->left = min_node_left;
-	TYPE min = min_node->key;
-	delete min_node;
-	min_node = min_node_left;
-	consolidate();
-	return min;
+	if (!min_node->son) {
+		auto *min_node_left = min_node->left;
+		auto *min_node_right = min_node->right;
+		min_node_left->right = min_node_right;
+		min_node_right->left = min_node_left;
+		TYPE min = min_node->key;
+		delete min_node;
+		min_node = min_node_left;
+		consolidate();
+		return min;
+	} else {
+		Node<TYPE> *min_son_1 = min_node->son;
+		Node<TYPE> *cur_son = min_son_1;
+		while (1) {
+			if (cur_son->right == min_son_1) {
+				break;
+			}
+			cur_son->father = NULL;
+			cur_son = cur_son->right;
+		}
+		auto *leftest_son = cur_son;
+
+		min_node->left->right = min_son_1;
+		min_son_1->left = min_node->left;
+
+		leftest_son->right = min_node->right;
+		min_node->right->left = leftest_son;
+
+		TYPE min = min_node->key;
+		auto *to_delete = min_node;
+		min_node = min_node->right;
+		delete to_delete;
+		consolidate();
+		return min;
+	}
 }
 
 template <typename TYPE, typename COMP>
