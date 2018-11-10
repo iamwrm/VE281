@@ -64,116 +64,83 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 	struct Node {
 		int degree = 0;
 		TYPE key;
+		bool mark = false;
 		Node<T> *father = NULL;
-		Node<T> *son = NULL;
+		std::vector<Node<T> *> *son = NULL;
 		Node<T> *left = this;
 		Node<T> *right = this;
 	};
 
 	Node<TYPE> *min_node = NULL;
+	std::vector<Node<TYPE> *> root_list;
 
-	virtual void print_root();
-	virtual void print_all();
+	// virtual void print_root();
+	// virtual void print_all();
 
 	virtual void consolidate();
+	virtual void link(Node<TYPE> *y, Node<TYPE> *x);
 	virtual void make_son(Node<TYPE> *new_father, Node<TYPE> *new_son);
 };
 
 // Add the definitions of the member functions here. Please refer to
 // binary_heap.h for the syntax.
+template <typename TYPE, typename COMP>
+void fib_heap<TYPE, COMP>::link(Node<TYPE> *y, Node<TYPE> *x)
+{
+	auto it = find(root_list.begin(), root_list.end(), y);
+	root_list.erase(it);
+	make_son(x, y);
+	y->mark = false;
+}
 
 template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::make_son(Node<TYPE> *new_father, Node<TYPE> *new_son)
 {
+	if (new_father->son == NULL) {
+		new_father->son = new std::vector<Node<TYPE> *>;
+	}
+	new_father->son->emplace_back(new_son);
 	new_father->degree++;
-	if (new_son == min_node) {
-		min_node = new_father;
-	}
-	if (!new_father->son) {
-		new_father->son = new_son;
-		new_son->left = new_son;
-		new_son->right = new_son;
-		new_son->father = new_father;
-	} else {
-		auto nfsr = new_father->son->right;
-
-		new_father->son->right = new_son;
-
-		new_son->left = new_father->son;
-		new_son->right = nfsr;
-
-		nfsr->left = new_father->son;
-	}
+	new_son->father = new_father;
 }
 
 template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::consolidate()
 {
-	int v_size = (int)(((double)log(root_size)) / ((double)log(1.618)));
-	std::vector<Node<TYPE> *> v1(root_size, NULL);
+	std::vector<Node<TYPE> *> A(size_p, NULL);
 
-	Node<TYPE> *current_point_1 = min_node;
-	if (1) {
-		while (1) {
-			while (1) {
-				assert(current_point_1->father == NULL);
-
-				int son_num = current_point_1->degree;
-				if (!v1[son_num]) {
-					v1[son_num] = current_point_1;
-					break;
-				} else {
-					Node<TYPE> *that_node = v1[son_num];
-					if (compare(that_node->key,
-						    current_point_1->key)) {
-						that_node->left->right =
-						    that_node->right;
-						that_node->right->left =
-						    that_node->left;
-
-						make_son(current_point_1,
-							 that_node);
-						v1[son_num] = NULL;
-
-					} else {
-						// current be son
-						current_point_1->left->right =
-						    current_point_1->right;
-						current_point_1->right->left =
-						    current_point_1->left;
-						make_son(that_node,
-							 current_point_1);
-						v1[son_num] = NULL;
-						current_point_1 = that_node;
-					}
+	for (auto w = root_list.begin(); w != root_list.end(); w++) {
+		Node<TYPE> *x = *w;
+		auto &d = x->degree;
+		while (A[d] != NULL) {
+			Node<TYPE> *y = A[d];
+			if (!compare(x->key, y->key)) {
+				std::swap(x, y);
+			}
+			link(y, x);
+			A[d] = NULL;
+			d++;
+		}
+		A[d] = x;
+	}
+	min_node = NULL;
+	for (int i = 0; i < size_p; i++) {
+		if (A[i] != NULL) {
+			if (min_node == NULL) {
+				root_list.clear();
+				root_list.emplace_back(A[i]);
+				min_node = A[i];
+			} else {
+				root_list.emplace_back(A[i]);
+				if (compare(A[i]->key, min_node->key)) {
+					min_node = A[i];
 				}
 			}
-
-			if (current_point_1->right == min_node) {
-				break;
-			} else {
-				current_point_1 = current_point_1->right;
-			}
 		}
 	}
-
-	// last step: decide min_node
-	Node<TYPE> *min_temp_node = min_node;
-	Node<TYPE> *current_point = min_node;
-
-	while (1) {
-		if (!compare(min_temp_node->key, current_point->key)) {
-			min_temp_node = current_point;
-		}
-		if (current_point->right == min_node) {
-			break;
-		} else {
-			current_point = current_point->right;
-		}
-	}
-	min_node = min_temp_node;
 }
 
+/*
 template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::print_all()
 {
@@ -221,89 +188,62 @@ void fib_heap<TYPE, COMP>::print_root()
 	}
 	std::cout << std::endl;
 }
+*/
 
 template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
 {
-	size_p++;
-	root_size++;
-	// if the fib_heap is empty
-	if (!min_node) {
-		min_node = new Node<TYPE>;
-		min_node->key = val;
-		return;
+	Node<TYPE> *x = new Node<TYPE>;
+	x->degree = 0;
+	x->father = NULL;
+	x->son = NULL;
+	x->key = val;
+	x->mark = false;
+
+	if (min_node == NULL) {
+		root_list.clear();
+		root_list.emplace_back(x);
+		min_node = x;
+	} else {
+		root_list.emplace_back(x);
+		if (compare(x->key, min_node->key)) {
+			min_node = x;
+		}
 	}
-
-	// if the fib_heap is not empty
-	Node<TYPE> *node_inserted = new Node<TYPE>;
-	node_inserted->key = val;
-
-	auto *min_right_stored = min_node->right;
-
-	min_node->right = node_inserted;
-
-	node_inserted->left = min_node;
-	node_inserted->right = min_right_stored;
-
-	min_right_stored->left = node_inserted;
-
-	consolidate();
-
-	print_all();
+	size_p++;
 }
 
 template <typename TYPE, typename COMP>
 TYPE fib_heap<TYPE, COMP>::dequeue_min()
 {
-	assert(size_p > 0);
-	TYPE min_cout = min_node->key;
-	if (size_p == 1) {
-		size_p--;
-		root_size--;
-		TYPE min = min_node->key;
-		auto *to_be_deleted = min_node;
-		min_node = NULL;
-		delete to_be_deleted;
-		return min;
-	}
-	// size_p >0
-	size_p--;
-	root_size--;
-	if (!min_node->son) {
-		auto *min_node_left = min_node->left;
-		auto *min_node_right = min_node->right;
-		min_node_left->right = min_node_right;
-		min_node_right->left = min_node_left;
-		TYPE min = min_node->key;
-		delete min_node;
-		min_node = min_node_left;
-		consolidate();
-		return min;
-	} else {
-		Node<TYPE> *min_son_1 = min_node->son;
-		Node<TYPE> *cur_son = min_son_1;
-		while (1) {
-			if (cur_son->right == min_son_1) {
-				break;
-			}
-			cur_son->father = NULL;
-			cur_son = cur_son->right;
+	Node<TYPE> *z = min_node;
+	if (min_node != NULL) {
+		for (auto x = z->son->begin(); x != z->son->end(); x++) {
+			root_list.emplace_back(*x);
+			(*x)->father = NULL;
 		}
-		auto *leftest_son = cur_son;
 
-		min_node->left->right = min_son_1;
-		min_son_1->left = min_node->left;
-
-		leftest_son->right = min_node->right;
-		min_node->right->left = leftest_son;
-
-		TYPE min = min_node->key;
-		auto *to_delete = min_node;
-		min_node = min_node->right;
-		delete to_delete;
-		consolidate();
-		return min;
+		auto itz = find(root_list.begin(), root_list.end(), z);
+		auto itzr = itz + 1;
+		if (itzr == root_list.end()) {
+			itzr = root_list.begin();
+		}
+		int flag = 0;
+		if (*itz == *(itzr)) {
+			flag = 1;
+		}
+		root_list.erase(itz);
+		if (flag) {
+			min_node = NULL;
+		} else {
+			min_node = *itzr;
+			consolidate();
+		}
+		size_p--;
 	}
+	auto z_key = z->key;
+	delete z;
+	return z_key;
 }
 
 template <typename TYPE, typename COMP>
