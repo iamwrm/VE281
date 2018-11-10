@@ -1,2 +1,4 @@
 main
 test_heap
+cmake-build-debug
+.idea/

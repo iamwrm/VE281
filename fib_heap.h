@@ -76,22 +76,92 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 	virtual void print_all();
 
 	virtual void consolidate();
+	virtual void make_son(Node<TYPE> *new_father, Node<TYPE> *new_son);
 };
 
 // Add the definitions of the member functions here. Please refer to
 // binary_heap.h for the syntax.
 
 template <typename TYPE, typename COMP>
+void fib_heap<TYPE, COMP>::make_son(Node<TYPE> *new_father, Node<TYPE> *new_son)
+{
+	new_father->degree++;
+	if (new_son == min_node) {
+		min_node = new_father;
+	}
+	if (!new_father->son) {
+		new_father->son = new_son;
+		new_son->left = new_son;
+		new_son->right = new_son;
+		new_son->father = new_father;
+	} else {
+		auto nfsr = new_father->son->right;
+
+		new_father->son->right = new_son;
+
+		new_son->left = new_father->son;
+		new_son->right = nfsr;
+
+		nfsr->left = new_father->son;
+	}
+}
+
+template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::consolidate()
 {
+	int v_size = (int)(((double)log(root_size)) / ((double)log(1.618)));
+	std::vector<Node<TYPE> *> v1(root_size, NULL);
 
+	Node<TYPE> *current_point_1 = min_node;
+	if (1) {
+		while (1) {
+			while (1) {
+				int son_num = current_point_1->degree;
+				if (!v1[son_num]) {
+					v1[son_num] = current_point_1;
+					break;
+				} else {
+					Node<TYPE> *that_node = v1[son_num];
+					if (compare(that_node->key,
+						    current_point_1->key)) {
+						that_node->left->right =
+						    that_node->right;
+						that_node->right->left =
+						    that_node->left;
+
+						make_son(current_point_1,
+							 that_node);
+						v1[son_num] = NULL;
+						print_all();
+
+					} else {
+						that_node->left->right =
+						    that_node->right;
+						that_node->right->left =
+						    that_node->left;
+
+						make_son(current_point_1,
+							 that_node);
+						v1[son_num] = NULL;
+						print_all();
+					}
+				}
+			}
+
+			if (current_point_1->right == min_node) {
+				break;
+			} else {
+				current_point_1 = current_point_1->right;
+			}
+		}
+	}
 
 	// last step: decide min_node
 	Node<TYPE> *min_temp_node = min_node;
 	Node<TYPE> *current_point = min_node;
 
 	while (1) {
-		if (compare(min_temp_node->key, current_point->key)) {
+		if (!compare(min_temp_node->key, current_point->key)) {
 			min_temp_node = current_point;
 		}
 		if (current_point->right == min_node) {
@@ -116,10 +186,12 @@ void fib_heap<TYPE, COMP>::print_all()
 
 			while (1) {
 				std::cout << current_point->key;
-				if (!current_point->son) {
+				if (current_point->son) {
 					std::cout << "[";
 					print_all_helper(current_point->son);
 					std::cout << "]  ";
+				} else {
+					std::cout << " ";
 				}
 				if (current_point->right == start_point) {
 					break;
@@ -154,8 +226,6 @@ void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
 {
 	size_p++;
 	root_size++;
-	std::cout << val << " ";
-
 	// if the fib_heap is empty
 	if (!min_node) {
 		min_node = new Node<TYPE>;
@@ -178,12 +248,13 @@ void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
 
 	consolidate();
 
-	print_all();
+	// print_all();
 }
 
 template <typename TYPE, typename COMP>
 TYPE fib_heap<TYPE, COMP>::dequeue_min()
 {
+	assert(size_p > 0);
 	TYPE min_cout = min_node->key;
 	if (size_p == 1) {
 		size_p--;
@@ -222,7 +293,6 @@ fib_heap<TYPE, COMP>::fib_heap(COMP comp)
 	// Fill in the remaining lines if you need.
 }
 
-// TODO: asshole for now
 template <typename TYPE, typename COMP>
 fib_heap<TYPE, COMP>::~fib_heap()
 {

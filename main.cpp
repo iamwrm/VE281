@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "binary_heap.h"
+#include "fib_heap.h"
 #include "unsorted_heap.h"
 #include "util.h"
 
@@ -48,6 +49,9 @@ int main(int argc, char **argv)
 	}
 	if (interface_property.get_method_name() == "UNSORTED") {
 		pq = new unsorted_heap<Point_Ptr, compare_t>;
+	}
+	if (interface_property.get_method_name() == "FIBONACCI") {
+		pq = new fib_heap<Point_Ptr, compare_t>;
 	}
 	// pq is tested
 
