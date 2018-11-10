@@ -1,12 +1,70 @@
 #include "util.h"
 
+void Grid::trace_back_path(const int start_id, const int end_id)
+{
+	int c_id = end_id;
+	while (c_id != start_id) {
+		std::cout << c_id << "->" << get_pre(c_id) << std::endl;
+		c_id = get_pre(c_id);
+	}
+}
+
+void Grid::diki(priority_queue<int> &PQ, const int start_id, const int end_id)
+{
+	set_pathcost(start_id, get_weight(start_id));
+	set_reached(start_id, true);
+
+	PQ.enqueue(start_id);
+
+	int counter = 0;
+	while (!PQ.empty()) {
+		print_grid();
+		if (counter++ > 20) {
+			break;
+		}
+		int C = PQ.dequeue_min();
+		// four neighbors
+		int Cx, Cy;
+		id_to_xy(Cx, Cy, C);
+		int r, d, l, u;
+		r = xy_to_id(Cx + 1, Cy);
+		d = xy_to_id(Cx, Cy + 1);
+		l = xy_to_id(Cx - 1, Cy);
+		u = xy_to_id(Cx, Cy - 1);
+		int neighbors[] = {r, d, l, u};
+		cout << C << endl;
+		for (int i = 0; i < 4; i++) {
+			if (neighbors[i] < 0) {
+				continue;
+			}
+			if (get_reached(neighbors[i])) {
+				continue;
+			}
+			int N = neighbors[i];
+			set_pathcost(N, get_pathcost(C) + get_weight(N));
+			set_pre(N, C);
+			if (end_id == N) {
+				trace_back_path(start_id, end_id);
+				return;
+			} else {
+				PQ.enqueue(N);
+			}
+		}
+	}
+}
+
 inline const int Grid::xy_to_id(const int x, const int y)
 {
-	return x + y * width;
+	if (x >= 0 && x < width && y >= 0 && y < height) {
+		return x + y * width;
+	} else {
+		return -1;
+	}
 }
 
 inline void Grid::id_to_xy(int &x, int &y, const int id)
 {
+	assert(id < height * width);
 	x = id % width;
 	y = id / width;
 }
@@ -16,8 +74,10 @@ void Grid::print_grid()
 	for (int i = 0; i < height; i++) {
 		cout << "i:" << i << endl;
 		for (int j = 0; j < width; j++) {
-			int temp_w = get_weight(j, i);
-			std::cout << "_" << temp_w << "_";
+			int id = xy_to_id(j, i);
+			std::cout << "\t"
+				  << "|" << get_weight(id) << get_reached(id)
+				  << get_pathcost(id) << get_pre(id) << "|";
 		}
 		std::cout << std::endl;
 	}
@@ -29,8 +89,10 @@ void Grid::read_weight_from_cin()
 		for (int j = 0; j < width; j++) {
 			int weight_temp;
 			std::cin >> weight_temp;
-			set_weight(j, i, weight_temp);
-			set_reached(j, i, false);
+			set_weight(xy_to_id(j, i), weight_temp);
+			set_reached(xy_to_id(j, i), false);
+			set_pathcost(xy_to_id(j, i), 0);
+			set_pre(xy_to_id(j, i), -1);
 		}
 	}
 }
@@ -42,45 +104,69 @@ Grid::Grid(int width_i, int height_i)
 	cout << "Grid: width:" << width << "Grid: height:" << height << endl;
 	reached = new bool[width * height];
 	weight = new int[width * height];
+	pathcost = new int[width * height];
+	pre = new int[width * height];
 }
 
 Grid::~Grid()
 {
 	delete[] reached;
 	delete[] weight;
+	delete[] pre;
+	delete[] pathcost;
 }
 
-void Grid::set_weight(int x, int y, int weight_i)
+void Grid::set_pathcost(int id, int cost)
 {
-	assert(x < width);
-	assert(y < height);
-	weight[x + y * width] = weight_i;
+	assert(id >= 0 && id < height * width);
+	pathcost[id] = cost;
 }
 
-void Grid::set_reached(int x, int y, bool if_reached)
+void Grid::set_weight(int id, int weight_i)
 {
-	assert(x < width);
-	assert(y < height);
-	reached[x + y * width] = if_reached;
+	assert(id >= 0 && id < height * width);
+	weight[id] = weight_i;
 }
 
-const int Grid::get_weight(int x, int y)
+void Grid::set_pre(int id, int id_pre)
 {
-	assert(x < width);
-	assert(y < height);
-	return weight[x + y * width];
+	assert(id >= 0 && id < height * width);
+	pre[id] = id_pre;
 }
 
-const bool Grid::get_reached(int x, int y)
+void Grid::set_reached(int id, bool reach)
 {
-	assert(x < width);
-	assert(y < height);
-	return reached[x + y * width];
+	assert(id >= 0 && id < height * width);
+	reached[id] = reach;
+}
+
+//===========================================
+
+const int Grid::get_weight(int id)
+{
+	assert(id >= 0 && id < height * width);
+	return weight[id];
+}
+
+const bool Grid::get_reached(int id)
+{
+	assert(id >= 0 && id < height * width);
+	return reached[id];
+}
+
+const int Grid::get_pathcost(int id)
+{
+	assert(id >= 0 && id < height * width);
+	return pathcost[id];
+}
+
+const int Grid::get_pre(int id)
+{
+	assert(id >= 0 && id < height * width);
+	return pre[id];
 }
 
 void Interface_Property::get_ops(int argc, char **argv)
-// void get_ops(int argc, char **argv, int &verbose_flag, std::string
-// &method_name)
 {
 	int c;
 
