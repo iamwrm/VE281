@@ -72,10 +72,45 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 	Node<TYPE> *min_node = NULL;
 
 	virtual void print_root();
+	virtual void print_all();
+
+	void consolidate();
 };
 
 // Add the definitions of the member functions here. Please refer to
 // binary_heap.h for the syntax.
+
+template <typename TYPE, typename COMP>
+void fib_heap<TYPE, COMP>::print_all()
+{
+	struct Print_all_local {
+		void print_all_helper(Node<TYPE> *start_point)
+		{
+			if (!start_point) {
+				return;
+			}
+			Node<TYPE> *current_point = start_point;
+
+			while (1) {
+				std::cout << current_point->key;
+				if (!current_point->son) {
+					std::cout << "[";
+					print_all_helper(current_point->son);
+					std::cout << "]  ";
+				}
+				if (current_point->right == start_point) {
+					break;
+				} else {
+					current_point = current_point->right;
+				}
+			}
+		}
+	};
+	Print_all_local pal;
+	std::cout << std::endl;
+	pal.print_all_helper(min_node);
+	std::cout << std::endl;
+}
 
 template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::print_root()
@@ -118,7 +153,7 @@ void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
 
 	min_right_stored->left = node_inserted;
 
-	print_root();
+	print_all();
 }
 
 template <typename TYPE, typename COMP>
