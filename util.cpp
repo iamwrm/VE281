@@ -154,6 +154,7 @@ Grid::~Grid()
 	delete[] weight;
 	delete[] pre;
 	delete[] pathcost;
+	delete[] ptrs;
 }
 
 void Grid::set_pathcost(int id, int cost)

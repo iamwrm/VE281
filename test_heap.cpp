@@ -1,6 +1,7 @@
 #include <iostream>
 #include "priority_queue.h"
 #include "binary_heap.h"
+#include "fib_heap.h"
 #include "unsorted_heap.h"
 using namespace std;
 
@@ -43,7 +44,7 @@ int main(int argc, char* argv[])
 	// We define a priority queue on int with the comparison functor as
 	// compare_t defined above. For this queue, the larger the int value is,
 	// the less prior it is.
-	priority_queue<int, compare_t> *pql = new binary_heap<int, compare_t>;
+	priority_queue<int, compare_t> *pql = new fib_heap<int, compare_t>;
    	//priority_queue<int, compare_t> *pql = new unsorted_heap<int, compare_t>;
 	for (i = 0; i < size; i++) pql->enqueue(a[i]);
 
@@ -64,7 +65,7 @@ int main(int argc, char* argv[])
     // For the following example, we omit the second template parameter, so the
     // priority queue uses the default less than operator defined on int. In
     // this queue, the smaller the int value is, the less prior it is.
-    priority_queue<int> *pqs = new binary_heap<int>;
+    priority_queue<int> *pqs = new fib_heap<int>;
     //priority_queue<int> *pqs = new unsorted_heap<int>;
     for(i = 0; i < size; i++)
         pqs->enqueue(a[i]);
