@@ -26,5 +26,18 @@ int main(int argc, char **argv)
 	std::cout << "method chosen:" << interface_property.get_method_name()
 		  << std::endl;
 
+	// input
+	int width, height, start_x, start_y, end_x, end_y;
+
+	cin >> width >> height;
+	cin >> start_x >> start_y;
+	cin >> end_x >> end_y;
+
+	Grid grid(width, height);
+	grid.read_weight_from_cin();
+
+	cout << width << " " << height << endl;
+	grid.print_grid();
+
 	return 0;
 }

@@ -1,5 +1,72 @@
 #include "util.h"
 
+void Grid::print_grid()
+{
+	for (int i = 0; i < height; i++) {
+		cout << "i:" << i << endl;
+		for (int j = 0; j < width; j++) {
+			int temp_w = get_weight(j, i);
+			std::cout << "_" << temp_w << "_";
+		}
+		std::cout << std::endl;
+	}
+}
+
+void Grid::read_weight_from_cin()
+{
+	for (int i = 0; i < height; i++) {
+		for (int j = 0; j < width; j++) {
+			int weight_temp;
+			std::cin >> weight_temp;
+			set_weight(j, i, weight_temp);
+			set_reached(j, i, false);
+		}
+	}
+}
+
+Grid::Grid(int width_i, int height_i)
+{
+	width = width_i;
+	height = height_i;
+	cout << "Grid: width:" << width << "Grid: height:" << height << endl;
+	reached = new bool[width * height];
+	weight = new int[width * height];
+}
+
+Grid::~Grid()
+{
+	delete[] reached;
+	delete[] weight;
+}
+
+void Grid::set_weight(int x, int y, int weight_i)
+{
+	assert(x < width);
+	assert(y < height);
+	weight[x + y * width] = weight_i;
+}
+
+void Grid::set_reached(int x, int y, bool if_reached)
+{
+	assert(x < width);
+	assert(y < height);
+	reached[x + y * width] = if_reached;
+}
+
+const int Grid::get_weight(int x, int y)
+{
+	assert(x < width);
+	assert(y < height);
+	return weight[x + y * width];
+}
+
+const bool Grid::get_reached(int x, int y)
+{
+	assert(x < width);
+	assert(y < height);
+	return reached[x + y * width];
+}
+
 void Interface_Property::get_ops(int argc, char **argv)
 // void get_ops(int argc, char **argv, int &verbose_flag, std::string
 // &method_name)
