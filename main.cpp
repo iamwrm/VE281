@@ -8,6 +8,7 @@
 #include <vector>
 
 #include "binary_heap.h"
+#include "unsorted_heap.h"
 #include "util.h"
 
 int main(int argc, char **argv)
@@ -40,8 +41,14 @@ int main(int argc, char **argv)
 	cout << width << " " << height << endl;
 	grid.print_grid();
 
-	priority_queue<Point_Ptr, compare_t> *pq =
-	    new binary_heap<Point_Ptr, compare_t>;
+	priority_queue<Point_Ptr, compare_t> *pq;
+
+	if (interface_property.get_method_name() == "BINARY") {
+		pq = new binary_heap<Point_Ptr, compare_t>;
+	}
+	if (interface_property.get_method_name() == "UNSORTED") {
+		pq = new unsorted_heap<Point_Ptr, compare_t>;
+	}
 	// pq is tested
 
 	auto &PQ = *pq;
