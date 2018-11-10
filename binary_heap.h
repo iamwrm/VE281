@@ -3,6 +3,7 @@
 
 #include <algorithm>
 #include "priority_queue.h"
+#include <cassert>
 
 // OVERVIEW: A specialized version of the 'heap' ADT implemented as a binary
 //           heap.
@@ -86,28 +87,28 @@ void binary_heap<TYPE, COMP> :: enqueue(const TYPE &val) {
 	}
 }
 
-template<typename TYPE, typename COMP>
-TYPE binary_heap<TYPE, COMP> :: dequeue_min() {
-    if (!this->empty()) {
-	    auto datum_poped = data[0];
-	    auto datum_last = *(data.end()-1);
-        data[0]=datum_last;
-	    data.erase(data.end()-1);
-        percolateDown(0);
-	    return datum_poped;
-    } else {
-	    assert(-1);
-    }
+template <typename TYPE, typename COMP>
+TYPE binary_heap<TYPE, COMP>::dequeue_min()
+{
+	if (!this->empty()) {
+		assert(-1);
+	}
+	auto datum_poped = data[0];
+	auto datum_last = *(data.end() - 1);
+	data[0] = datum_last;
+	data.erase(data.end() - 1);
+	percolateDown(0);
+	return datum_poped;
 }
 
-template<typename TYPE, typename COMP>
-const TYPE &binary_heap<TYPE, COMP> :: get_min() const {
-    if (!this->empty()) {
-	    auto datum_poped = data[0];
-	    return datum_poped;
-    } else {
-	    assert(-1);
-    }
+template <typename TYPE, typename COMP>
+const TYPE &binary_heap<TYPE, COMP>::get_min() const
+{
+	if (!this->empty()) {
+		assert(-1);
+	}
+	auto & datum_poped = data[0];
+	return datum_poped;
 }
 
 template<typename TYPE, typename COMP>

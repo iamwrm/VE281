@@ -1,5 +1,16 @@
 #include "util.h"
 
+inline const int Grid::xy_to_id(const int x, const int y)
+{
+	return x + y * width;
+}
+
+inline void Grid::id_to_xy(int &x, int &y, const int id)
+{
+	x = id % width;
+	y = id / width;
+}
+
 void Grid::print_grid()
 {
 	for (int i = 0; i < height; i++) {

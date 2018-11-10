@@ -3,6 +3,7 @@
 #include <getopt.h>
 #include <cstdio>
 #include <cstdlib>
+#include <cassert>
 #include <iostream>
 #include <string>
 
@@ -12,20 +13,27 @@ using std::endl;
 
 class Grid {
        private:
-       bool * reached;
-       int * weight;
-       int height;
-       int width;
+	bool *reached;
+	int *weight;
+	int height;
+	int width;
 
        public:
 	Grid(int width, int height);
 	~Grid();
-	void set_weight(int x,int y,int weight);
-	void set_reached(int x,int y,bool if_reached);
-	const int get_weight(int x,int y);
-	const bool get_reached(int x,int y);
+
+	void set_weight(int x, int y, int weight);
+	void set_reached(int x, int y, bool if_reached);
+
+	const int get_weight(int x, int y);
+	const bool get_reached(int x, int y);
+
 	void read_weight_from_cin();
+
 	void print_grid();
+
+	const int xy_to_id(const int x, const int y);
+	void id_to_xy(int &x, int &y, const int id);
 };
 
 class Interface_Property {

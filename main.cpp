@@ -7,6 +7,7 @@
 #include <list>
 #include <vector>
 
+#include "binary_heap.h"
 #include "util.h"
 
 int main(int argc, char **argv)
@@ -39,5 +40,9 @@ int main(int argc, char **argv)
 	cout << width << " " << height << endl;
 	grid.print_grid();
 
+	priority_queue<int> *bh = new binary_heap<int>;
+
+
+	delete bh;
 	return 0;
 }
