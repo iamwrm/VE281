@@ -4,6 +4,7 @@
 #include <algorithm>
 #include <cmath>
 #include <iostream>
+#include <vector>
 #include "priority_queue.h"
 
 // OVERVIEW: A specialized version of the 'heap' ADT implemented as a
@@ -74,11 +75,33 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 	virtual void print_root();
 	virtual void print_all();
 
-	void consolidate();
+	virtual void consolidate();
 };
 
 // Add the definitions of the member functions here. Please refer to
 // binary_heap.h for the syntax.
+
+template <typename TYPE, typename COMP>
+void fib_heap<TYPE, COMP>::consolidate()
+{
+
+
+	// last step: decide min_node
+	Node<TYPE> *min_temp_node = min_node;
+	Node<TYPE> *current_point = min_node;
+
+	while (1) {
+		if (compare(min_temp_node->key, current_point->key)) {
+			min_temp_node = current_point;
+		}
+		if (current_point->right == min_node) {
+			break;
+		} else {
+			current_point = current_point->right;
+		}
+	}
+	min_node = min_temp_node;
+}
 
 template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::print_all()
@@ -153,6 +176,8 @@ void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
 
 	min_right_stored->left = node_inserted;
 
+	consolidate();
+
 	print_all();
 }
 
@@ -179,6 +204,7 @@ TYPE fib_heap<TYPE, COMP>::dequeue_min()
 	TYPE min = min_node->key;
 	delete min_node;
 	min_node = min_node_left;
+	consolidate();
 	return min;
 }
 
