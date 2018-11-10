@@ -68,23 +68,6 @@ void binary_heap<TYPE, COMP> :: enqueue(const TYPE &val) {
 		std::swap(data[pos], data[pos / 2]);
 		pos = pos / 2;
 	}
-
-	if (0) {
-		using namespace std;
-		int a = 0;
-		int b = 1;
-		for (auto it = data.begin(); it != data.end(); it++) {
-			cout << *(it) << "\t";
-			a++;
-			if (a >= b) {
-				cout << endl;
-				a = 0;
-				b = b << 1;
-			}
-		}
-		cout << endl;
-		cout << endl;
-	}
 }
 
 template <typename TYPE, typename COMP>

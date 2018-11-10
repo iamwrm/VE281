@@ -2,27 +2,53 @@
 
 void Grid::trace_back_path(const int start_id, const int end_id)
 {
+	// for brief
+	cout << "The shortest path from ";
+	cout << start_id % width << "," << start_id / width << ") to (";
+	cout << end_id % width << "," << end_id / width << ") is ";
+	cout << get_pathcost(end_id) << "." << endl;
+	cout << "Path:" << endl;
+	std::vector<std::string> v1;
 	int c_id = end_id;
-	while (c_id != start_id) {
-		std::cout << c_id << "->" << get_pre(c_id) << std::endl;
+	while (1) {
+		stringstream s1;
+		int c_x = c_id % width;
+		int c_y = c_id / width;
+		s1 << "(" << c_x << "," << c_y << ")" << endl;
 		c_id = get_pre(c_id);
+		v1.emplace_back(std::move(s1.str()));
+		if (c_id == start_id) {
+			stringstream s1;
+			int c_x = c_id % width;
+			int c_y = c_id / width;
+			s1 << "(" << c_x << "," << c_y << ")" << endl;
+			c_id = get_pre(c_id);
+			v1.emplace_back(std::move(s1.str()));
+			break;
+		}
+	}
+	for (int it = v1.size() - 1; it >= 0; it--) {
+		cout << v1[it];
 	}
 }
 
-void Grid::diki(priority_queue<int> &PQ, const int start_id, const int end_id)
+void Grid::diki(priority_queue<Point_Ptr, compare_t> &PQ, const int start_id,
+		const int end_id)
 {
+	int counter = 0;
 	set_pathcost(start_id, get_weight(start_id));
 	set_reached(start_id, true);
 
-	PQ.enqueue(start_id);
-
-	int counter = 0;
+	PQ.enqueue(get_ptr(start_id));
 	while (!PQ.empty()) {
-		print_grid();
-		if (counter++ > 20) {
-			break;
-		}
-		int C = PQ.dequeue_min();
+		// print_grid();
+		Point_Ptr C_ptr = PQ.dequeue_min();
+		int C = C_ptr.id;
+		cout << "Step " << counter;
+		cout << "\nChoose cell (" << C % width << "," << C / width
+		     << ") with accumulated legnth " << get_pathcost(C) << "."
+		     << endl;
+		counter++;
 		// four neighbors
 		int Cx, Cy;
 		id_to_xy(Cx, Cy, C);
@@ -32,7 +58,7 @@ void Grid::diki(priority_queue<int> &PQ, const int start_id, const int end_id)
 		l = xy_to_id(Cx - 1, Cy);
 		u = xy_to_id(Cx, Cy - 1);
 		int neighbors[] = {r, d, l, u};
-		cout << C << endl;
+		// cout << "C:" << C << endl;
 		for (int i = 0; i < 4; i++) {
 			if (neighbors[i] < 0) {
 				continue;
@@ -42,12 +68,19 @@ void Grid::diki(priority_queue<int> &PQ, const int start_id, const int end_id)
 			}
 			int N = neighbors[i];
 			set_pathcost(N, get_pathcost(C) + get_weight(N));
+			set_reached(N, true);
 			set_pre(N, C);
+			// cout << "N:" << N << endl;
 			if (end_id == N) {
 				trace_back_path(start_id, end_id);
 				return;
 			} else {
-				PQ.enqueue(N);
+				PQ.enqueue(get_ptr(N));
+				cout << "Cell (" << N % width << ","
+				     << N / width
+				     << ") with accumulated legnth "
+				     << get_pathcost(N)
+				     << " is added into the queue" << endl;
 			}
 		}
 	}
@@ -72,12 +105,12 @@ inline void Grid::id_to_xy(int &x, int &y, const int id)
 void Grid::print_grid()
 {
 	for (int i = 0; i < height; i++) {
-		cout << "i:" << i << endl;
 		for (int j = 0; j < width; j++) {
 			int id = xy_to_id(j, i);
-			std::cout << "\t"
-				  << "|" << get_weight(id) << get_reached(id)
-				  << get_pathcost(id) << get_pre(id) << "|";
+			std::cout << "  "
+				  << "|" << get_weight(id) << "="
+				  << get_reached(id) << "|" << get_pathcost(id)
+				  << "|" << get_pre(id) << "|";
 		}
 		std::cout << std::endl;
 	}
@@ -93,6 +126,12 @@ void Grid::read_weight_from_cin()
 			set_reached(xy_to_id(j, i), false);
 			set_pathcost(xy_to_id(j, i), 0);
 			set_pre(xy_to_id(j, i), -1);
+			ptrs[xy_to_id(j, i)].id = xy_to_id(j, i);
+			ptrs[xy_to_id(j, i)].pathcost =
+			    pathcost + xy_to_id(j, i);
+			ptrs[xy_to_id(j, i)].pre = pre + xy_to_id(j, i);
+			ptrs[xy_to_id(j, i)].reached = reached + xy_to_id(j, i);
+			ptrs[xy_to_id(j, i)].weight = weight + xy_to_id(j, i);
 		}
 	}
 }
@@ -106,6 +145,7 @@ Grid::Grid(int width_i, int height_i)
 	weight = new int[width * height];
 	pathcost = new int[width * height];
 	pre = new int[width * height];
+	ptrs = new Point_Ptr[width * height];
 }
 
 Grid::~Grid()

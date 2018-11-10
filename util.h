@@ -5,7 +5,11 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 #include <string>
+#include <vector>
+
+using namespace std;
 
 #include "binary_heap.h"
 
@@ -13,14 +17,32 @@ using std::cin;
 using std::cout;
 using std::endl;
 
+class Point_Ptr {
+       public:
+	int id;
+	bool *reached;
+	int *weight;
+	int *pathcost;
+	int *pre;
+};
+
+struct compare_t {
+	bool operator()(Point_Ptr a, Point_Ptr b) const
+	{
+		return *(a.pathcost) < *(b.pathcost);
+	}
+};
+
 class Grid {
        private:
 	bool *reached;
 	int *weight;
 	int *pathcost;
 	int *pre;
+	Point_Ptr *ptrs;
 	int height;
 	int width;
+	int verbose_wr = 1;
 
        public:
 	Grid(int width, int height);
@@ -42,8 +64,13 @@ class Grid {
 
 	const int xy_to_id(const int x, const int y);
 	void id_to_xy(int &x, int &y, const int id);
-	void diki(priority_queue<int> &pq, int const, int const);
+	void diki(priority_queue<Point_Ptr, compare_t> &pq, int const,
+		  int const);
 	void trace_back_path(const int start, const int end);
+	Point_Ptr get_ptr(const int id)
+	{
+		return ptrs[id];
+	}
 };
 
 class Interface_Property {

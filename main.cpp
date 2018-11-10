@@ -40,7 +40,10 @@ int main(int argc, char **argv)
 	cout << width << " " << height << endl;
 	grid.print_grid();
 
-	priority_queue<int> *pq = new binary_heap<int>;
+	priority_queue<Point_Ptr, compare_t> *pq =
+	    new binary_heap<Point_Ptr, compare_t>;
+	// pq is tested
+
 	auto &PQ = *pq;
 
 	grid.diki(PQ, start_x + start_y * width, end_x + end_y * width);
