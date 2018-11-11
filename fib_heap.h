@@ -64,6 +64,7 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 		TYPE key;
 		bool mark = false;
 		std::list<Node *> child;
+		std::list<Node *> *childs;
 	};
 
 	Node *min_node = NULL;
@@ -72,14 +73,14 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 	std::vector<Node *> root_list;
 	std::list<Node *> roots;
 
-	void consolidate();
+	void reform_helper();
 	void link(const decltype(min) &y, Node *&x);
 	void recursive_delete(std::list<Node *>);
 
 	void link(Node *y, Node *x);
 	void enqueue_(const TYPE &val);
 	TYPE dequeue_min_();
-	void consolidate_();
+	void consolidate();
 	void make_son(Node *new_father, Node *new_son);
 };
 
@@ -135,41 +136,6 @@ TYPE fib_heap<TYPE, COMP>::dequeue_min()
 }
 
 template <typename TYPE, typename COMP>
-void fib_heap<TYPE, COMP>::consolidate()
-{
-	const unsigned Dn = (unsigned)(log(size_p) / log(1.618));
-	auto roots_end = roots.end();
-	// std::vector<decltype(min)> A(Dn + 1, roots_end);
-	decltype(min) *A = new decltype(min)[Dn + 1];
-	for (int i = 0; i < Dn + 1; i++) {
-		A[i] = roots_end;
-	}
-	if (!roots.empty()) {
-		for (auto w = roots.begin(); w != roots.end();) {
-			auto x = w++;
-			unsigned d = (*x)->degree;
-			while (A[d] != roots.end()) {
-				auto y = A[d];
-				if (compare((*y)->key, (*x)->key)) {
-					std::swap(x, y);
-				}
-				link(y, *x);
-				A[d] = roots.end();
-				d++;
-			}
-			A[d] = x;
-		}
-	}
-	min = roots.begin();
-	for (auto it = roots.begin(); it != roots.end(); ++it) {
-		if (compare((*it)->key, (*min)->key)) {
-			min = it;
-		}
-	}
-	delete[] A;
-}
-
-template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::link(const decltype(min) &y, Node *&x)
 {
 	Node *inserted = (*y);
@@ -192,55 +158,60 @@ void fib_heap<TYPE, COMP>::link(Node *y, Node *x)
 template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::make_son(Node *new_father, Node *new_son)
 {
-	if (new_father->child == NULL) {
-		new_father->child = new std::list<Node *>;
+	if (new_father->childs == NULL) {
+		new_father->childs = new std::list<Node *>;
 	}
-	new_father->child->emplace_back(new_son);
-	new_father->degreeree++;
+	new_father->childs->emplace_back(new_son);
+	new_father->degree++;
 }
 
 template <typename TYPE, typename COMP>
-void fib_heap<TYPE, COMP>::consolidate_()
+void fib_heap<TYPE, COMP>::consolidate()
 {
-	std::vector<Node *> A(size_p + 1);
-	for (int i = 0; i < size_p; i++) {
-		A[i] = NULL;
-	}
-	if (!root_list.empty()) {
-		for (int w = 0; w < root_list.size(); w++) {
-			Node *x = root_list[w];
-			// int &d = x->degree;
-			int d;
-			if (x->child == NULL) {
-				d = 0;
-			} else {
-				d = x->child->size();
-			}
-			while (A[d] != NULL) {
-				Node *y = A[d];
-				if (compare(x->key, y->key)) {
-					std::swap(x, y);
-				}
-				link(y, x);
-				A[d] = NULL;
-				x->degree++;
-			}
-			A[d] = x;
+	if (size_p < 1) {
+		std::vector<Node *> A(size_p + 1);
+		for (int i = 0; i < size_p; i++) {
+			A[i] = NULL;
 		}
-	}
-	min_node = NULL;
-	for (int i = 0; i < size_p; i++) {
-		if (A[i] != NULL) {
-			if (min_node == NULL) {
-				root_list.emplace_back(A[i]);
-				min_node = A[i];
-			} else {
-				root_list.emplace_back(A[i]);
-				if (!compare(A[i]->key, min_node->key)) {
+		if (!root_list.empty()) {
+			for (int w = 0; w < root_list.size(); w++) {
+				Node *x = root_list[w];
+				// int &d = x->degree;
+				int d;
+				if (x->childs == NULL) {
+					d = 0;
+				} else {
+					d = x->childs->size();
+				}
+				while (A[d] != NULL) {
+					Node *y = A[d];
+					if (compare(x->key, y->key)) {
+						std::swap(x, y);
+					}
+					link(y, x);
+					A[d] = NULL;
+					x->degree++;
+				}
+				A[d] = x;
+			}
+		}
+		min_node = NULL;
+		for (int i = 0; i < size_p; i++) {
+			if (A[i] != NULL) {
+				if (min_node == NULL) {
+					root_list.emplace_back(A[i]);
 					min_node = A[i];
+				} else {
+					root_list.emplace_back(A[i]);
+					if (!compare(A[i]->key,
+						     min_node->key)) {
+						min_node = A[i];
+					}
 				}
 			}
 		}
+	} else {
+		reform_helper();
 	}
 }
 
@@ -299,7 +270,7 @@ TYPE fib_heap<TYPE, COMP>::dequeue_min_()
 			min_node = NULL;
 		} else {
 			min_node = *itzr;
-			consolidate();
+			reform_helper();
 		}
 		size_p--;
 	}
@@ -307,6 +278,41 @@ TYPE fib_heap<TYPE, COMP>::dequeue_min_()
 	auto z_key = z->key;
 	delete z;
 	return z_key;
+}
+
+template <typename TYPE, typename COMP>
+void fib_heap<TYPE, COMP>::reform_helper()
+{
+	const unsigned Dn = (unsigned)(log(size_p) / log(1.618));
+	auto roots_end = roots.end();
+	// std::vector<decltype(min)> A(Dn + 1, roots_end);
+	decltype(min) *A = new decltype(min)[Dn + 1];
+	for (int i = 0; i < Dn + 1; i++) {
+		A[i] = roots_end;
+	}
+	if (!roots.empty()) {
+		for (auto w = roots.begin(); w != roots.end();) {
+			auto x = w++;
+			unsigned d = (*x)->degree;
+			while (A[d] != roots.end()) {
+				auto y = A[d];
+				if (compare((*y)->key, (*x)->key)) {
+					std::swap(x, y);
+				}
+				link(y, *x);
+				A[d] = roots.end();
+				d++;
+			}
+			A[d] = x;
+		}
+	}
+	min = roots.begin();
+	for (auto it = roots.begin(); it != roots.end(); ++it) {
+		if (compare((*it)->key, (*min)->key)) {
+			min = it;
+		}
+	}
+	delete[] A;
 }
 
 // DONE:
