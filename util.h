@@ -42,10 +42,10 @@ class Grid {
 	Point_Ptr *ptrs;
 	int height;
 	int width;
-	int verbose_wr = 1;
+	bool verbose_wr;
 
        public:
-	Grid(int width, int height);
+	Grid(int width, int height, bool verbose_wr);
 	~Grid();
 
 	void set_weight(int id, int weight);

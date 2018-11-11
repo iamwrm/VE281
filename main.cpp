@@ -25,9 +25,10 @@ int main(int argc, char **argv)
 	Interface_Property interface_property(argc, argv);
 	// ============================================
 
-	if (interface_property.get_verbose_flag()) puts("verbose flag is set");
-	std::cout << "method chosen:" << interface_property.get_method_name()
-		  << std::endl;
+	// if (interface_property.get_verbose_flag()) puts("verbose flag is
+	// set");
+	// std::cout << "method chosen:" << interface_property.get_method_name()
+	//<< std::endl;
 
 	// input
 	int width, height, start_x, start_y, end_x, end_y;
@@ -36,11 +37,11 @@ int main(int argc, char **argv)
 	cin >> start_x >> start_y;
 	cin >> end_x >> end_y;
 
-	Grid grid(width, height);
+	Grid grid(width, height, interface_property.get_verbose_flag());
 	grid.read_weight_from_cin();
 
-	cout << width << " " << height << endl;
-	grid.print_grid();
+	// cout << width << " " << height << endl;
+	// grid.print_grid();
 
 	priority_queue<Point_Ptr, compare_t> *pq;
 

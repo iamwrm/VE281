@@ -103,8 +103,9 @@ void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
 	x->key = std::move(val);
 	roots.emplace_front(x);
 	if (min == roots.end() ||
-	    (min != roots.end() && compare(x->key, (*min)->key)))
+	    (min != roots.end() && compare(x->key, (*min)->key))) {
 		min = roots.begin();
+	}
 	++size_p;
 }
 
@@ -133,8 +134,11 @@ void fib_heap<TYPE, COMP>::consolidate()
 {
 	const unsigned Dn = (unsigned)(log(size_p) / log(1.618));
 	auto roots_end = roots.end();
-	std::vector<decltype(min)> A(Dn + 1, roots_end);
-
+	// std::vector<decltype(min)> A(Dn + 1, roots_end);
+	decltype(min) *A = new decltype(min)[Dn + 1];
+	for (int i = 0; i < Dn + 1; i++) {
+		A[i] = roots_end;
+	}
 	if (!roots.empty()) {
 		for (auto w = roots.begin(); w != roots.end();) {
 			auto x = w++;
@@ -156,14 +160,15 @@ void fib_heap<TYPE, COMP>::consolidate()
 			min = it;
 		}
 	}
+	delete[] A;
 }
 
 template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::link(const decltype(min) &y, Node *&x)
 {
-	Node *yy = (*y);
+	Node *inserted = (*y);
 	roots.erase(y);
-	x->child.emplace_front(std::move(yy));
+	x->child.emplace_front(std::move(inserted));
 	++x->degree;
 }
 
@@ -253,7 +258,6 @@ void fib_heap<TYPE, COMP>::enqueue_(const TYPE &val)
 		}
 	}
 	size_p++;
-	consolidate();
 	std::cout << min_node->key << std::endl;
 }
 

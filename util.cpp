@@ -3,9 +3,9 @@
 void Grid::trace_back_path(const int start_id, const int end_id)
 {
 	// for brief
-	cout << "The shortest path from ";
-	cout << start_id % width << "," << start_id / width << ") to (";
-	cout << end_id % width << "," << end_id / width << ") is ";
+	cout << "The shortest path from (";
+	cout << start_id % width << ", " << start_id / width << ") to (";
+	cout << end_id % width << ", " << end_id / width << ") is ";
 	cout << get_pathcost(end_id) << "." << endl;
 	cout << "Path:" << endl;
 	std::vector<std::string> v1;
@@ -14,14 +14,14 @@ void Grid::trace_back_path(const int start_id, const int end_id)
 		stringstream s1;
 		int c_x = c_id % width;
 		int c_y = c_id / width;
-		s1 << "(" << c_x << "," << c_y << ")" << endl;
+		s1 << "(" << c_x << ", " << c_y << ")" << endl;
 		c_id = get_pre(c_id);
 		v1.emplace_back(std::move(s1.str()));
 		if (c_id == start_id) {
 			stringstream s1;
 			int c_x = c_id % width;
 			int c_y = c_id / width;
-			s1 << "(" << c_x << "," << c_y << ")" << endl;
+			s1 << "(" << c_x << ", " << c_y << ")" << endl;
 			c_id = get_pre(c_id);
 			v1.emplace_back(std::move(s1.str()));
 			break;
@@ -44,10 +44,12 @@ void Grid::diki(priority_queue<Point_Ptr, compare_t> &PQ, const int start_id,
 		// print_grid();
 		Point_Ptr C_ptr = PQ.dequeue_min();
 		int C = C_ptr.id;
-		cout << "Step " << counter;
-		cout << "\nChoose cell (" << C % width << "," << C / width
-		     << ") with accumulated legnth " << get_pathcost(C) << "."
-		     << endl;
+		if (verbose_wr) {
+			cout << "Step " << counter;
+			cout << "\nChoose cell (" << C % width << ", "
+			     << C / width << ") with accumulated length "
+			     << get_pathcost(C) << "." << endl;
+		}
 		counter++;
 		// four neighbors
 		int Cx, Cy;
@@ -76,11 +78,14 @@ void Grid::diki(priority_queue<Point_Ptr, compare_t> &PQ, const int start_id,
 				return;
 			} else {
 				PQ.enqueue(get_ptr(N));
-				cout << "Cell (" << N % width << ","
-				     << N / width
-				     << ") with accumulated legnth "
-				     << get_pathcost(N)
-				     << " is added into the queue" << endl;
+				if (verbose_wr) {
+					cout << "Cell (" << N % width << ", "
+					     << N / width
+					     << ") with accumulated length "
+					     << get_pathcost(N)
+					     << " is added into the queue."
+					     << endl;
+				}
 			}
 		}
 	}
@@ -136,11 +141,12 @@ void Grid::read_weight_from_cin()
 	}
 }
 
-Grid::Grid(int width_i, int height_i)
+Grid::Grid(int width_i, int height_i, bool verbose_input)
 {
+	verbose_wr = verbose_input;
 	width = width_i;
 	height = height_i;
-	cout << "Grid: width:" << width << "Grid: height:" << height << endl;
+	// cout << "Grid: width:" << width << "Grid: height:" << height << endl;
 	reached = new bool[width * height];
 	weight = new int[width * height];
 	pathcost = new int[width * height];
