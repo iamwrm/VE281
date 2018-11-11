@@ -74,7 +74,7 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 
 	void consolidate();
 	void link(const decltype(min) &y, Node *&x);
-	void erase_helper(std::list<Node *>);
+	void recursive_delete(std::list<Node *>);
 
 	void link(Node *y, Node *x);
 	void enqueue_(const TYPE &val);
@@ -87,11 +87,11 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 // binary_heap.h for the syntax.
 
 template <typename TYPE, typename COMP>
-void fib_heap<TYPE, COMP>::erase_helper(std::list<Node *> vic)
+void fib_heap<TYPE, COMP>::recursive_delete(std::list<Node *> vic)
 {
 	if (vic.empty()) return;
 	for (auto &it : vic) {
-		erase_helper(it->child);
+		recursive_delete(it->child);
 		delete it;
 	}
 }
@@ -101,12 +101,13 @@ void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
 {
 	Node *x = new Node;
 	x->key = std::move(val);
-	roots.emplace_front(x);
-	if (min == roots.end() ||
-	    (min != roots.end() && compare(x->key, (*min)->key))) {
+	roots.emplace_front(std::move(x));
+	if (min == roots.end()) {
+		min = roots.begin();
+	} else if (compare(x->key, (*min)->key)) {
 		min = roots.begin();
 	}
-	++size_p;
+	size_p++;
 }
 
 template <typename TYPE, typename COMP>
@@ -114,17 +115,21 @@ TYPE fib_heap<TYPE, COMP>::dequeue_min()
 {
 	TYPE res = (*min)->key;
 	auto &z = *min;
-	if (z) {
-		if (!z->child.empty())
-			roots.splice(roots.begin(), std::move(z->child));
+	if (!z) {
+		return res;
+	}
+	if (!z->child.empty()) {
+		roots.splice(roots.begin(), std::move(z->child));
+	}
 
-		delete z;
-		roots.erase(min);  // min has undefined behavior
-		size_p--;
-		if (size_p == 0)
-			min = roots.end();
-		else
-			consolidate();
+	delete z;
+	roots.erase(min);
+	size_p--;
+
+	if (size_p == 0) {
+		min = roots.end();
+	} else {
+		consolidate();
 	}
 	return res;
 }
@@ -145,8 +150,9 @@ void fib_heap<TYPE, COMP>::consolidate()
 			unsigned d = (*x)->degree;
 			while (A[d] != roots.end()) {
 				auto y = A[d];
-				if (compare((*y)->key, (*x)->key))
+				if (compare((*y)->key, (*x)->key)) {
 					std::swap(x, y);
+				}
 				link(y, *x);
 				A[d] = roots.end();
 				d++;
@@ -324,7 +330,7 @@ fib_heap<TYPE, COMP>::fib_heap(COMP comp)
 template <typename TYPE, typename COMP>
 fib_heap<TYPE, COMP>::~fib_heap()
 {
-	erase_helper(roots);
+	recursive_delete(roots);
 	// Fill in the remaining lines if you need.
 }
 
