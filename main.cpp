@@ -37,8 +37,11 @@ int main(int argc, char **argv)
 	cin >> start_x >> start_y;
 	cin >> end_x >> end_y;
 
+	width_g=width;
+
 	Grid grid(width, height, interface_property.get_verbose_flag());
 	grid.read_weight_from_cin();
+
 
 	// cout << width << " " << height << endl;
 	// grid.print_grid();

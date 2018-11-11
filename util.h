@@ -17,6 +17,8 @@ using std::cin;
 using std::cout;
 using std::endl;
 
+static int width_g;
+
 class Point_Ptr {
        public:
 	int id;
@@ -27,9 +29,16 @@ class Point_Ptr {
 };
 
 struct compare_t {
-	bool operator()(Point_Ptr a, Point_Ptr b) const
+	bool operator()(const Point_Ptr &a, const Point_Ptr &b) const
 	{
-		return *(a.pathcost) < *(b.pathcost);
+		if (*(a.pathcost) == *(b.pathcost)) {
+			if (a.id % width_g == b.id % width_g) {
+				return (a.id / width_g < b.id / width_g);
+			}
+			return (a.id % width_g < b.id % width_g);
+		} else {
+			return (*(a.pathcost) < *(b.pathcost));
+		}
 	}
 };
 

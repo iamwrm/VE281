@@ -60,7 +60,6 @@ void Grid::diki(priority_queue<Point_Ptr, compare_t> &PQ, const int start_id,
 		l = xy_to_id(Cx - 1, Cy);
 		u = xy_to_id(Cx, Cy - 1);
 		int neighbors[] = {r, d, l, u};
-		// cout << "C:" << C << endl;
 		for (int i = 0; i < 4; i++) {
 			if (neighbors[i] < 0) {
 				continue;
@@ -72,12 +71,17 @@ void Grid::diki(priority_queue<Point_Ptr, compare_t> &PQ, const int start_id,
 			set_pathcost(N, get_pathcost(C) + get_weight(N));
 			set_reached(N, true);
 			set_pre(N, C);
-			// cout << "N:" << N << endl;
 			if (end_id == N) {
+				if (verbose_wr) {
+					cout << "Cell (" << N % width << ", "
+					     << N / width
+					     << ") with accumulated length "
+					     << get_pathcost(N)
+					     << " is the ending point." << endl;
+				}
 				trace_back_path(start_id, end_id);
 				return;
 			} else {
-				PQ.enqueue(get_ptr(N));
 				if (verbose_wr) {
 					cout << "Cell (" << N % width << ", "
 					     << N / width
@@ -86,6 +90,9 @@ void Grid::diki(priority_queue<Point_Ptr, compare_t> &PQ, const int start_id,
 					     << " is added into the queue."
 					     << endl;
 				}
+				PQ.enqueue(get_ptr(N));
+				std::cout << N % width << N / width
+					  << std::endl;
 			}
 		}
 	}
