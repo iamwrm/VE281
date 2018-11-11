@@ -7,8 +7,6 @@
 #include <list>
 #include "priority_queue.h"
 
-#define node_t Node
-
 // OVERVIEW: A specialized version of the 'heap' ADT implemented as a
 //           Fibonacci heap.
 template <typename TYPE, typename COMP = std::less<TYPE> >
@@ -65,7 +63,7 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 		int degree = 0;
 		TYPE key;
 		bool mark = false;
-		std::list<Node *> *child = NULL;
+		std::list<Node *> child;
 	};
 
 	Node *min_node = NULL;
@@ -94,12 +92,76 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 // binary_heap.h for the syntax.
 
 template <typename TYPE, typename COMP>
-void fib_heap<TYPE, COMP>::link(const decltype(min) &y, node_t *&x)
+void fib_heap<TYPE, COMP>::erase_helper(std::list<Node *> vic)
 {
-	node_t *yy = (*y);
+	if (vic.empty()) return;
+	for (auto &it : vic) {
+		erase_helper(it->child);
+		delete it;
+	}
+}
+
+template <typename TYPE, typename COMP>
+void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
+{
+	Node *x = new Node;
+	x->degree = 0;
+	x->key = std::move(val);
+	roots.emplace_front(x);
+	if (min == roots.end() ||
+	    (min != roots.end() && compare(x->key, (*min)->key)))
+		min = roots.begin();
+	++size_p;
+}
+
+template <typename TYPE, typename COMP>
+TYPE fib_heap<TYPE, COMP>::dequeue_min()
+{
+	TYPE res = (*min)->key;
+	auto &z = *min;
+	if (z) {
+		if (!z->child.empty())
+			roots.splice(roots.begin(), std::move(z->child));
+
+		delete z;
+		roots.erase(min);  // min has undefined behavior
+		size_p--;
+		if (size_p == 0)
+			min = roots.end();
+		else
+			consolidate();
+	}
+	return res;
+}
+template <typename TYPE, typename COMP>
+void fib_heap<TYPE, COMP>::consolidate()
+{
+	const unsigned Dn = (unsigned)(log(size_p) / log(1.618));
+	decltype(min) A[Dn + 1];
+	for (unsigned i = 0; i <= Dn; ++i) A[i] = roots.end();
+	for (auto w = roots.begin(); w != roots.end();) {
+		auto x = w++;
+		unsigned d = (*x)->degree;
+		while (A[d] != roots.end()) {
+			auto y = A[d];
+			if (compare((*y)->key, (*x)->key)) std::swap(x, y);
+			link(y, *x);
+			A[d++] = roots.end();
+		}
+		A[d] = x;
+	}
+	min = roots.begin();
+	for (auto it = roots.begin(); it != roots.end(); ++it)
+		if (compare((*it)->key, (*min)->key)) min = it;
+}
+
+template <typename TYPE, typename COMP>
+void fib_heap<TYPE, COMP>::link(const decltype(min) &y, Node *&x)
+{
+	Node *yy = (*y);
 	roots.erase(y);
-	x->cld.emplace_front(std::move(yy));
-	++x->deg;
+	x->child.emplace_front(std::move(yy));
+	++x->degree;
 }
 
 // =======================================
@@ -120,7 +182,7 @@ void fib_heap<TYPE, COMP>::make_son(Node *new_father, Node *new_son)
 		new_father->child = new std::list<Node *>;
 	}
 	new_father->child->emplace_back(new_son);
-	new_father->degree++;
+	new_father->degreeree++;
 }
 
 template <typename TYPE, typename COMP>
