@@ -67,25 +67,20 @@ class fib_heap : public priority_queue<TYPE, COMP> {
 	};
 
 	Node *min_node = NULL;
-	// typename std::list<node_t *>::iterator min;
 	typename std::list<Node *>::iterator min;
 
 	std::vector<Node *> root_list;
 	std::list<Node *> roots;
 
-	// virtual void print_root();
-	// virtual void print_all();
-
-	void consolidate_();
 	void consolidate();
-	void link(Node *y, Node *x);
-	void make_son(Node *new_father, Node *new_son);
-
 	void link(const decltype(min) &y, Node *&x);
 	void erase_helper(std::list<Node *>);
 
+	void link(Node *y, Node *x);
 	void enqueue_(const TYPE &val);
 	TYPE dequeue_min_();
+	void consolidate_();
+	void make_son(Node *new_father, Node *new_son);
 };
 
 // Add the definitions of the member functions here. Please refer to
@@ -105,7 +100,6 @@ template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::enqueue(const TYPE &val)
 {
 	Node *x = new Node;
-	x->degree = 0;
 	x->key = std::move(val);
 	roots.emplace_front(x);
 	if (min == roots.end() ||
@@ -133,26 +127,35 @@ TYPE fib_heap<TYPE, COMP>::dequeue_min()
 	}
 	return res;
 }
+
 template <typename TYPE, typename COMP>
 void fib_heap<TYPE, COMP>::consolidate()
 {
 	const unsigned Dn = (unsigned)(log(size_p) / log(1.618));
-	decltype(min) A[Dn + 1];
-	for (unsigned i = 0; i <= Dn; ++i) A[i] = roots.end();
-	for (auto w = roots.begin(); w != roots.end();) {
-		auto x = w++;
-		unsigned d = (*x)->degree;
-		while (A[d] != roots.end()) {
-			auto y = A[d];
-			if (compare((*y)->key, (*x)->key)) std::swap(x, y);
-			link(y, *x);
-			A[d++] = roots.end();
+	auto roots_end = roots.end();
+	std::vector<decltype(min)> A(Dn + 1, roots_end);
+
+	if (!roots.empty()) {
+		for (auto w = roots.begin(); w != roots.end();) {
+			auto x = w++;
+			unsigned d = (*x)->degree;
+			while (A[d] != roots.end()) {
+				auto y = A[d];
+				if (compare((*y)->key, (*x)->key))
+					std::swap(x, y);
+				link(y, *x);
+				A[d] = roots.end();
+				d++;
+			}
+			A[d] = x;
 		}
-		A[d] = x;
 	}
 	min = roots.begin();
-	for (auto it = roots.begin(); it != roots.end(); ++it)
-		if (compare((*it)->key, (*min)->key)) min = it;
+	for (auto it = roots.begin(); it != roots.end(); ++it) {
+		if (compare((*it)->key, (*min)->key)) {
+			min = it;
+		}
+	}
 }
 
 template <typename TYPE, typename COMP>
@@ -228,7 +231,6 @@ void fib_heap<TYPE, COMP>::consolidate_()
 			}
 		}
 	}
-	assert((min_node != NULL) && (size_p > 0));
 }
 
 template <typename TYPE, typename COMP>
@@ -290,7 +292,6 @@ TYPE fib_heap<TYPE, COMP>::dequeue_min_()
 			consolidate();
 		}
 		size_p--;
-		assert((min_node != NULL) && (size_p > 0));
 	}
 
 	auto z_key = z->key;
