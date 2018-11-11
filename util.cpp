@@ -91,8 +91,6 @@ void Grid::diki(priority_queue<Point_Ptr, compare_t> &PQ, const int start_id,
 					     << endl;
 				}
 				PQ.enqueue(get_ptr(N));
-				std::cout << N % width << N / width
-					  << std::endl;
 			}
 		}
 	}

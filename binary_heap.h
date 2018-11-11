@@ -67,7 +67,7 @@ template <typename TYPE, typename COMP>
 void binary_heap<TYPE, COMP>::enqueue(const TYPE &val)
 {
 	data.emplace_back(std::move(val));
-	int pos = size_p++;
+	int pos = ++size_p;
 	// per up
 	while (pos > 1 && (compare(data[pos], data[pos >> 1]))) {
 		std::swap(data[pos], data[pos >> 1]);
@@ -121,14 +121,6 @@ void binary_heap<TYPE, COMP>::percolateDown(int id)
 		std::swap(heap[id], heap[j]);
 		id = j;
 	}
-	/*
-	unsigned p = 1;
-	while ((p <<= 1) <= size_p) {
-		if (p < size_p && compare(data[p ^ 1], data[p])) p ^= 1;
-		if (compare(data[p >> 1], data[p])) break;
-		std::swap(data[p >> 1], data[p]);
-	}
-	*/
 }
 
 #endif  // BINARY_HEAP_H
