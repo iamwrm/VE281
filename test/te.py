@@ -10,7 +10,7 @@ import time
 TEST_SIZE = 6
 PER_SIZE = 5
 INT_MAX = 100
-size = [1, 30, 50, 100, 300, 600, 900, 1200, 1500]
+size = [100, 300, 600, 900, 1200, 1500]
 if __name__ == "__main__":
     dirname = '../inputs'
     if not os.path.exists(dirname):
