@@ -3,32 +3,35 @@
 void Grid::trace_back_path(const int start_id, const int end_id)
 {
 	// for brief
-	cout << "The shortest path from (";
-	cout << start_id % width << ", " << start_id / width << ") to (";
-	cout << end_id % width << ", " << end_id / width << ") is ";
-	cout << get_pathcost(end_id) << ".\n";
-	cout << "Path:\n";
-	std::vector<std::string> v1;
-	int c_id = end_id;
-	while (1) {
-		stringstream s1;
-		int c_x = c_id % width;
-		int c_y = c_id / width;
-		s1 << "(" << c_x << ", " << c_y << ")\n";
-		c_id = get_pre(c_id);
-		v1.emplace_back(std::move(s1.str()));
-		if (c_id == start_id) {
+	if (0) {
+		cout << "The shortest path from (";
+		cout << start_id % width << ", " << start_id / width
+		     << ") to (";
+		cout << end_id % width << ", " << end_id / width << ") is ";
+		cout << get_pathcost(end_id) << ".\n";
+		cout << "Path:\n";
+		std::vector<std::string> v1;
+		int c_id = end_id;
+		while (1) {
 			stringstream s1;
 			int c_x = c_id % width;
 			int c_y = c_id / width;
 			s1 << "(" << c_x << ", " << c_y << ")\n";
 			c_id = get_pre(c_id);
 			v1.emplace_back(std::move(s1.str()));
-			break;
+			if (c_id == start_id) {
+				stringstream s1;
+				int c_x = c_id % width;
+				int c_y = c_id / width;
+				s1 << "(" << c_x << ", " << c_y << ")\n";
+				c_id = get_pre(c_id);
+				v1.emplace_back(std::move(s1.str()));
+				break;
+			}
 		}
-	}
-	for (int it = v1.size() - 1; it >= 0; it--) {
-		cout << v1[it];
+		for (int it = v1.size() - 1; it >= 0; it--) {
+			cout << v1[it];
+		}
 	}
 }
 
