@@ -5,6 +5,7 @@ struct Pool {
 
 	std::vector<Argu_Order> va;
 	std::vector<Equity> ve;
+	int commission = 0;
 };
 
 void put_in_ve(Pool &pool, One_Line_Order &olo)
@@ -27,6 +28,20 @@ void put_in_ve(Pool &pool, One_Line_Order &olo)
 		the_equity.sell_pq.emplace(
 		    std::move(Order_for_pq(olo.ID, olo.price)));
 	}
+}
+
+void pay_commission(Pool &pool, const int &number, const int &price)
+{
+	int commission = price * number / 100;
+	commission *= 2;
+	pool.commission += commission;
+}
+
+void trans_msg(One_Line_Order buyer, One_Line_Order seller, int num, int price)
+{
+	std::cout << buyer.client_name << " purchased " << num << " shares of "
+		  << buyer.e_name << " from " << seller.client_name << " for $"
+		  << price << "/share\n";
 }
 
 bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
@@ -54,7 +69,7 @@ bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
 		One_Line_Order &olo_pq = pool.va[top_order_id].olo;
 
 		if (olo_pq.expire_time != -1 &&
-		    olo_pq.expire_time + olo_pq.time_stamp < cur_time_stamp) {
+		    olo_pq.expire_time + olo_pq.time_stamp <= cur_time_stamp) {
 			// expired
 			the_pq.pop();
 			continue;
@@ -67,13 +82,21 @@ bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
 
 		if (olo.number >= olo_pq.number) {
 			// DONE: trade event
-			olo.number -= olo_pq.number;
+			int trade_price = olo_pq.price;
+			int trade_num = olo_pq.number;
+			pay_commission(pool, trade_num, trade_price);
+			trans_msg(olo_pq, olo, trade_num, trade_price);
+			olo.number -= trade_num;
 			olo_pq.number = 0;
 			the_pq.pop();
 			continue;
 		} else {
 			// DONE: trade event
-			olo_pq.number -= olo.number;
+			int trade_price = olo_pq.price;
+			int trade_num = olo.number;
+			pay_commission(pool, trade_num, trade_price);
+			trans_msg(olo_pq, olo, trade_num, trade_price);
+			olo_pq.number -= trade_num;
 			olo.number = 0;
 			return true;
 		}
@@ -107,7 +130,7 @@ bool find_seller_and_trade(Pool &pool, One_Line_Order &olo,
 		One_Line_Order &olo_pq = pool.va[top_order_id].olo;
 
 		if (olo_pq.expire_time != -1 &&
-		    olo_pq.expire_time + olo_pq.time_stamp < cur_time_stamp) {
+		    olo_pq.expire_time + olo_pq.time_stamp <= cur_time_stamp) {
 			// expired
 			the_pq.pop();
 			continue;
@@ -120,12 +143,20 @@ bool find_seller_and_trade(Pool &pool, One_Line_Order &olo,
 
 		if (olo.number >= olo_pq.number) {
 			// DONE: trade event
+			int trade_price = olo_pq.price;
+			int trade_num = olo_pq.number;
+			pay_commission(pool, trade_num, trade_price);
+			trans_msg(olo, olo_pq, trade_num, trade_price);
 			olo.number -= olo_pq.number;
 			olo_pq.number = 0;
 			the_pq.pop();
 			continue;
 		} else {
 			// DONE: trade event
+			int trade_price = olo_pq.price;
+			int trade_num = olo.number;
+			pay_commission(pool, trade_num, trade_price);
+			trans_msg(olo, olo_pq, trade_num, trade_price);
 			olo_pq.number -= olo.number;
 			olo.number = 0;
 			return true;
@@ -156,7 +187,7 @@ int main(int argc, char **argv)
 	while (getline(cin, line)) {
 		One_Line_Order olo;
 		olo.read(line, order_id);
-		olo.print();
+		//olo.print();
 		if (current_time_stamp != olo.time_stamp) {
 			// print median
 
@@ -167,20 +198,19 @@ int main(int argc, char **argv)
 			// check expired order
 		}
 
-		// match it
-		bool trade_success;
-		if (olo.is_buy) {
-			trade_success = find_seller_and_trade(
-			    pool, olo, current_time_stamp);
-		} else {
-			trade_success =
-			    find_buyer_and_trade(pool, olo, current_time_stamp);
-		}
-		if (trade_success) {
-			continue;
-		}
-		if (olo.expire_time == 0) {
-			continue;
+		if (1) {
+			// match it
+			bool trade_success =
+			    (olo.is_buy) ? find_seller_and_trade(
+					       pool, olo, current_time_stamp)
+					 : find_buyer_and_trade(
+					       pool, olo, current_time_stamp);
+			if (trade_success) {
+				continue;
+			}
+			if (olo.expire_time == 0) {
+				continue;
+			}
 		}
 
 		// put in va
@@ -189,24 +219,32 @@ int main(int argc, char **argv)
 		put_in_ve(pool, olo);
 	}
 
+	cout << "commission:" << pool.commission << std::endl;
+
 	cout << "ve size " << pool.ve.size() << std::endl;
 
-	auto a = pool.ve[0];
-	while (!a.buy_pq.empty()) {
-		auto b = a.buy_pq.top();
-		auto c = pool.va[b.ID];
-		auto d = c.olo;
-		d.print();
-		a.buy_pq.pop();
-	}
+	if (0) {
+		for (int i = 0; i < pool.ve.size(); i++) {
+			cout << "buyer\n";
+			auto a = pool.ve[i];
+			while (!a.buy_pq.empty()) {
+				auto b = a.buy_pq.top();
+				auto c = pool.va[b.ID];
+				auto d = c.olo;
+				d.print();
+				a.buy_pq.pop();
+			}
 
-	cout << "====\n";
-	while (!a.sell_pq.empty()) {
-		auto b = a.sell_pq.top();
-		auto c = pool.va[b.ID];
-		auto d = c.olo;
-		d.print();
-		a.sell_pq.pop();
+			cout << "\nseller\n";
+			while (!a.sell_pq.empty()) {
+				auto b = a.sell_pq.top();
+				auto c = pool.va[b.ID];
+				auto d = c.olo;
+				d.print();
+				a.sell_pq.pop();
+			}
+			cout << "==========" << std::endl;
+		}
 	}
 
 	exit(0);
