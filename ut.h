@@ -117,6 +117,8 @@ struct Pool {
 	std::vector<Equity> ve;
 	int commission = 0;
 	int completed_trades_num = 0;
+	int total_money_transferred = 0;
+	int num_of_shares_traded = 0;
 };
 
 // void get_ops(int argc,char ** argv int&, int&);

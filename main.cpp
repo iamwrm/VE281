@@ -41,24 +41,21 @@ void trans_msg(Pool &pool, One_Line_Order buyer, One_Line_Order seller, int num,
 	}
 	//  register number of trades
 	pool.completed_trades_num++;
+	pool.total_money_transferred += price * num;
+	pool.num_of_shares_traded += num;
 
 	// register buyer and seller
-}
-
-void print_all(const Pool &pool)
-{
-	int size = pool.va.size();
-	for (int i = 0; i < size; i++) {
-		cout << "line num:" << pool.va[i].olo.ID + 1 << " expire time "
-		     << pool.va[i].olo.expire_time << std::endl;
-	}
 }
 
 void print_end_of_day(Pool pool, Flags flag)
 {
 	cout << "---End of Day---\n";
 	cout << "Commission Earnings: $" << pool.commission << std::endl;
+	cout << "Total Amount of Money Transferred: $"
+	     << pool.total_money_transferred << std::endl;
 	cout << "Number of Completed Trades: " << pool.completed_trades_num
+	     << std::endl;
+	cout << "Number of Shares Traded: " << pool.num_of_shares_traded
 	     << std::endl;
 }
 
@@ -68,9 +65,9 @@ int main(int argc, char **argv)
 	get_ops(argc, argv, flags);
 
 	// std::cout << flags.g_num;
-	for (auto a : flags.g_e_names) {
-		// std::cout << a << std::endl;
-	}
+	// for (auto a : flags.g_e_names) {
+	//  std::cout << a << std::endl;
+	// }
 
 	int order_id = 0;
 
@@ -81,7 +78,7 @@ int main(int argc, char **argv)
 	while (getline(cin, line)) {
 		One_Line_Order olo;
 		olo.read(line, order_id);
-		// olo.print();
+
 		if (current_time_stamp != olo.time_stamp) {
 			// print median
 
@@ -92,9 +89,7 @@ int main(int argc, char **argv)
 			// check expired order
 		}
 
-		// print_all(pool);
-
-		// match it
+		// match trade
 		bool trade_success =
 		    (olo.is_buy) ? find_seller_and_trade(
 				       pool, olo, current_time_stamp, flags)
@@ -103,11 +98,8 @@ int main(int argc, char **argv)
 
 		// put in va
 		pool.va.emplace_back(std::move(Argu_Order(olo, 1)));
-		if (trade_success) {
-			continue;
-		}
 
-		if (olo.expire_time == 0) {
+		if (trade_success || !olo.expire_time) {
 			continue;
 		}
 
