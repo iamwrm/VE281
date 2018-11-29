@@ -4,6 +4,8 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <map>
+#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -13,7 +15,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
-struct One_Line_Order {
+class One_Line_Order {
 	int time_stamp;
 	std::string client_name;
 	bool is_buy;
@@ -21,37 +23,28 @@ struct One_Line_Order {
 	int price;
 	int number;
 	int expire_time;
-	void read(std::string line)
+	int ID;
+
+       public:
+	void read(std::string line, int &order_id)
 	{
+		ID = order_id++;
 		std::stringstream ss1(line);
 		string string_buffer;
 
-		ss1 >> time_stamp;
-		ss1 >> client_name;
+		ss1 >> time_stamp >> client_name >> string_buffer;
 
-		ss1 >> string_buffer;
-		if (string_buffer == "BUY") {
-			is_buy = true;
-		} else {
-			is_buy = false;
-		}
-
-		ss1 >> e_name;
+		is_buy = (string_buffer == "BUY") ? true : false;
 
 		char em;
-		ss1 >> em;
-		ss1 >> price;
-
-		ss1 >> em;
-		ss1 >> number;
-
-		ss1 >> expire_time;
+		ss1 >> e_name >> em >> price >> em >> number >> expire_time;
 	}
 	void print()
 	{
-		std::cout << time_stamp << " " << client_name << " " << is_buy
-			  << " " << e_name << " " << price << " " << number
-			  << " " << expire_time << " " << std::endl;
+		std::cout << ID << " " << time_stamp << " " << client_name
+			  << " " << is_buy << " " << e_name << " " << price
+			  << " " << number << " " << expire_time << " "
+			  << std::endl;
 	}
 };
 

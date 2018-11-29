@@ -1,5 +1,14 @@
 #include "ut.h"
 
+int order_id = 0;
+
+class A_Ptr {
+};
+
+class Pool {
+	std::map<std::string, A_Ptr> curr_e_names;
+};
+
 int main(int argc, char **argv)
 {
 	Flags flags;
@@ -15,9 +24,8 @@ int main(int argc, char **argv)
 	string line;
 	while (getline(cin, line)) {
 		One_Line_Order olo;
-		olo.read(line);
+		olo.read(line, order_id);
 		olo.print();
-		// ss1.clear();
 	}
 
 	exit(0);
