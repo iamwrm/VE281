@@ -5,7 +5,6 @@
 #include <cstdlib>
 #include <iostream>
 #include <map>
-#include <memory>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -15,7 +14,7 @@ using std::cout;
 using std::string;
 using std::vector;
 
-class One_Line_Order {
+struct One_Line_Order {
 	int time_stamp;
 	std::string client_name;
 	bool is_buy;
