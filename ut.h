@@ -21,6 +21,32 @@ struct One_Line_Order {
 	int price;
 	int number;
 	int expire_time;
+	void read(std::string line)
+	{
+		std::stringstream ss1(line);
+		string string_buffer;
+
+		ss1 >> time_stamp;
+		ss1 >> client_name;
+
+		ss1 >> string_buffer;
+		if (string_buffer == "BUY") {
+			is_buy = true;
+		} else {
+			is_buy = false;
+		}
+
+		ss1 >> e_name;
+
+		char em;
+		ss1 >> em;
+		ss1 >> price;
+
+		ss1 >> em;
+		ss1 >> number;
+
+		ss1 >> expire_time;
+	}
 	void print()
 	{
 		std::cout << time_stamp << " " << client_name << " " << is_buy
