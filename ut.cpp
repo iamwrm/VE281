@@ -38,7 +38,6 @@ void get_ops(int argc, char **argv, Flags &flags)
 				break;
 
 			case 'g':
-				printf("option -g with value `%s'\n", optarg);
 				flags.g_num++;
 				flags.g_e_names.push_back(std::string(optarg));
 				break;

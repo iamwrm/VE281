@@ -4,11 +4,30 @@
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 
+using std::cin;
+using std::cout;
 using std::string;
 using std::vector;
+
+struct One_Line_Order {
+	int time_stamp;
+	std::string client_name;
+	bool is_buy;
+	std::string e_name;
+	int price;
+	int number;
+	int expire_time;
+	void print()
+	{
+		std::cout << time_stamp << " " << client_name << " " << is_buy
+			  << " " << e_name << " " << price << " " << number
+			  << " " << expire_time << " " << std::endl;
+	}
+};
 
 struct Flags {
 	int v_flag = 0;
