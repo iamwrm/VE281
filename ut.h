@@ -110,8 +110,23 @@ struct Argu_Order {
 	}
 };
 
+struct Pool {
+	std::map<std::string, int> curr_e_names;
+
+	std::vector<Argu_Order> va;
+	std::vector<Equity> ve;
+	int commission = 0;
+	int completed_trades_num = 0;
+};
+
 // void get_ops(int argc,char ** argv int&, int&);
 
 void get_ops(int argc, char **argv, Flags &flags);
+bool find_seller_and_trade(Pool &pool, One_Line_Order &olo,
+			   const int &cur_time_stamp, Flags flags);
+bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
+			  const int &cur_time_stamp, Flags flags);
+void trans_msg(Pool &pool, One_Line_Order buyer, One_Line_Order seller, int num,
+	       int price, Flags flags);
 
 #endif  // UT_H
