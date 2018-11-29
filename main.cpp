@@ -1,59 +1,6 @@
 #include "ut.h"
 
-#include <memory>
-#include <queue>
 
-struct Order_for_pq {
-	int ID;
-	int price;
-	Order_for_pq(int ID, int price) : ID(ID), price(price)
-	{
-	}
-};
-
-struct Equity {
-	class Compare_s {
-	       public:
-		bool operator()(Order_for_pq o1, Order_for_pq o2)
-		{
-			if (o1.price > o2.price) {
-				return true;
-			} else if (o1.price == o2.price) {
-				if (o1.ID > o2.ID) {
-					return true;
-				}
-			}
-			return false;
-		}
-	};
-	class Compare_b {
-	       public:
-		bool operator()(Order_for_pq o1, Order_for_pq o2)
-		{
-			if (o1.price < o2.price) {
-				return true;
-			} else if (o1.price == o2.price) {
-				if (o1.ID > o2.ID) {
-					return true;
-				}
-			}
-			return false;
-		}
-	};
-	std::priority_queue<Order_for_pq, vector<Order_for_pq>, Compare_s>
-	    sell_pq;
-	std::priority_queue<Order_for_pq, vector<Order_for_pq>, Compare_b>
-	    buy_pq;
-};
-
-struct Argu_Order {
-	One_Line_Order olo;
-	int valid;
-	Argu_Order(One_Line_Order olo_input, int valid_input)
-	    : olo(olo_input), valid(valid_input)
-	{
-	}
-};
 
 struct Pool {
 	std::map<std::string, int> curr_e_names;
@@ -118,10 +65,9 @@ int main(int argc, char **argv)
 
 		// match it
 
-		// store it
-		//   put in va
+		// put in va
 		pool.va.emplace_back(std::move(Argu_Order(olo, 1)));
-		//   put in ve
+		// put in ve
 		put_in_ve(pool, olo);
 	}
 

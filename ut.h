@@ -5,6 +5,8 @@
 #include <cstdlib>
 #include <iostream>
 #include <map>
+#include <memory>
+#include <queue>
 #include <sstream>
 #include <string>
 #include <vector>
@@ -54,6 +56,58 @@ struct Flags {
 	int p_flag = 0;
 	int g_num = 0;
 	vector<string> g_e_names;
+};
+
+struct Order_for_pq {
+	int ID;
+	int price;
+	Order_for_pq(int ID, int price) : ID(ID), price(price)
+	{
+	}
+};
+
+struct Equity {
+	class Compare_s {
+	       public:
+		bool operator()(Order_for_pq o1, Order_for_pq o2)
+		{
+			if (o1.price > o2.price) {
+				return true;
+			} else if (o1.price == o2.price) {
+				if (o1.ID > o2.ID) {
+					return true;
+				}
+			}
+			return false;
+		}
+	};
+	class Compare_b {
+	       public:
+		bool operator()(Order_for_pq o1, Order_for_pq o2)
+		{
+			if (o1.price < o2.price) {
+				return true;
+			} else if (o1.price == o2.price) {
+				if (o1.ID > o2.ID) {
+					return true;
+				}
+			}
+			return false;
+		}
+	};
+	std::priority_queue<Order_for_pq, vector<Order_for_pq>, Compare_s>
+	    sell_pq;
+	std::priority_queue<Order_for_pq, vector<Order_for_pq>, Compare_b>
+	    buy_pq;
+};
+
+struct Argu_Order {
+	One_Line_Order olo;
+	int valid;
+	Argu_Order(One_Line_Order olo_input, int valid_input)
+	    : olo(olo_input), valid(valid_input)
+	{
+	}
 };
 
 // void get_ops(int argc,char ** argv int&, int&);
