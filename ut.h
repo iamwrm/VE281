@@ -109,11 +109,18 @@ class Compare_b {
 class Equity {
 	vector<One_Line_Order> v_for_ttt;
 	Median_E median_e;
+	std::string E_name;
 
        public:
-	std::string E_name;
 	void median_push_back(const int &i);
 	void median_print(int tm);
+	std::string get_ename(){
+		return E_name;
+	}
+	Equity(std::string name)
+	{
+		E_name = name;
+	}
 	std::priority_queue<Order_for_pq, vector<Order_for_pq>, Compare_s>
 	    sell_pq;
 	std::priority_queue<Order_for_pq, vector<Order_for_pq>, Compare_b>
@@ -151,6 +158,7 @@ class Midpoint_Listen_List {
 
 struct Pool {
 	std::map<std::string, int> curr_e_names;
+
 	std::map<std::string, int> client_names;
 
 	std::vector<One_Line_Order> va;

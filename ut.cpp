@@ -206,10 +206,9 @@ void put_in_ve(Pool &pool, One_Line_Order &olo)
 	auto it = pool.curr_e_names.find(olo.e_name);
 	if (it == pool.curr_e_names.end()) {
 		// new equity
-		pool.ve.emplace_back(Equity());
+		pool.ve.emplace_back(Equity(olo.e_name));
 		pool.curr_e_names.emplace(
 		    std::make_pair(olo.e_name, pool.ve.size() - 1));
-		pool.ve[pool.ve.size() - 1].E_name = olo.e_name;
 	}
 	it = pool.curr_e_names.find(olo.e_name);
 
@@ -333,7 +332,7 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 				break;
 			}
 		}
-		cout << "Midpoint of " << that_ve.E_name << " at time " << tm
+		cout << "Midpoint of " << that_ve.get_ename() << " at time " << tm
 		     << " is ";
 
 		if (sell_price != -1 && buy_price != -1) {
