@@ -66,8 +66,55 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 	// interate through all equity
 	for (auto it : pool.curr_e_names) {
 		auto &that_ve = pool.ve[it.second];
-		that_ve.median_print(tm);
-		// print if not empty
+		int sell_price = -1;
+		int buy_price = -1;
+		{
+			auto &the_pq = that_ve.sell_pq;
+			while (!the_pq.empty()) {
+				int top_order_id = the_pq.top().ID;
+
+				One_Line_Order &olo_pq =
+				    pool.va[top_order_id].olo;
+
+				if (olo_pq.expire_time != -1 &&
+				    olo_pq.expire_time + olo_pq.time_stamp <=
+					tm) {
+					// expired
+					the_pq.pop();
+					continue;
+				}
+				sell_price = olo_pq.price;
+				break;
+			}
+		}
+		{
+			auto &the_pq = that_ve.buy_pq;
+			while (!the_pq.empty()) {
+				int top_order_id = the_pq.top().ID;
+
+				One_Line_Order &olo_pq =
+				    pool.va[top_order_id].olo;
+
+				if (olo_pq.expire_time != -1 &&
+				    olo_pq.expire_time + olo_pq.time_stamp <=
+					tm) {
+					// expired
+					the_pq.pop();
+					continue;
+				}
+				buy_price = olo_pq.price;
+				break;
+			}
+		}
+		cout << "Midpoint of " << that_ve.E_name << " at time " << tm
+		     << " is ";
+
+		if (sell_price != -1 && buy_price != -1) {
+			cout << "$" << (buy_price + sell_price) / 2;
+		} else {
+			cout << "undefined";
+		}
+		cout << "\n";
 	}
 }
 
@@ -136,6 +183,16 @@ int main(int argc, char **argv)
 		}
 
 		put_in_ve(pool, olo);
+	}
+
+	// print median
+	if (flags.m_flag) {
+		print_all_equity_median(pool, current_time_stamp);
+	}
+
+	// print midpoint
+	if (flags.p_flag) {
+		print_all_equity_midpoint(pool, current_time_stamp);
 	}
 
 	print_end_of_day(pool, flags);
