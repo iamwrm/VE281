@@ -68,9 +68,8 @@ void add_to_midpoint_listen_list(Pool &pool, const One_Line_Order &olo,
 		auto it = pool.curr_e_names.find(olo.e_name);
 		if (it == pool.curr_e_names.end()) {
 			// new equity
-			pool.ve.emplace_back(Equity(olo.e_name));
-			pool.curr_e_names.emplace(
-			    std::make_pair(olo.e_name, pool.ve.size() - 1));
+			pool.curr_e_names.emplace(std::make_pair(
+			    olo.e_name, std::make_shared<Equity>(olo.e_name)));
 		}
 	}
 }

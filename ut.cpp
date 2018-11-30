@@ -57,8 +57,8 @@ bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
 		return false;
 	}
 	// find the equity
-	int id_of_e = it->second;
-	auto &the_pq = pool.ve[id_of_e].buy_pq;
+	// int id_of_e = it->second;
+	auto &the_pq = it->second->buy_pq;
 
 	if (olo.number == 0) {
 		return true;
@@ -118,8 +118,8 @@ bool find_seller_and_trade(Pool &pool, One_Line_Order &olo,
 		return false;
 	}
 	// find the equity
-	int id_of_e = it->second;
-	auto &the_pq = pool.ve[id_of_e].sell_pq;
+	// int id_of_e = it->second;
+	auto &the_pq = it->second->sell_pq;
 
 	if (olo.number == 0) {
 		return true;
@@ -206,13 +206,12 @@ void put_in_ve(Pool &pool, One_Line_Order &olo)
 	auto it = pool.curr_e_names.find(olo.e_name);
 	if (it == pool.curr_e_names.end()) {
 		// new equity
-		pool.ve.emplace_back(Equity(olo.e_name));
-		pool.curr_e_names.emplace(
-		    std::make_pair(olo.e_name, pool.ve.size() - 1));
+		pool.curr_e_names.emplace(std::make_pair(
+		    olo.e_name, std::make_shared<Equity>(olo.e_name)));
 	}
 	it = pool.curr_e_names.find(olo.e_name);
 
-	Equity &the_equity = pool.ve[it->second];
+	Equity &the_equity = *(it->second);
 
 	if (olo.is_buy) {
 		the_equity.buy_pq.emplace((Order_for_pq(olo.ID, olo.price)));
@@ -244,9 +243,8 @@ void trans_msg(Pool &pool, One_Line_Order buyer, One_Line_Order seller, int num,
 	pool.num_of_shares_traded += num;
 
 	// median
-	auto &the_equity =
-	    pool.ve[pool.curr_e_names.find(buyer.e_name)->second];
-	the_equity.median_push_back(price);
+
+	pool.curr_e_names.find(buyer.e_name)->second->median_push_back(price);
 
 	// register buyer and seller
 	auto f = [](Pool &pool,
@@ -283,7 +281,7 @@ void print_all_equity_median(Pool &pool, int tm)
 {
 	// interate through all equity
 	for (auto it : pool.curr_e_names) {
-		auto &that_ve = pool.ve[it.second];
+		auto &that_ve = *it.second;
 		that_ve.median_print(tm);
 	}
 }
@@ -293,7 +291,7 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 	// interate through all equity
 	for (auto it : pool.midpoint_listen_list.names) {
 		auto jt = pool.curr_e_names.find(it.first);
-		auto &that_ve = pool.ve[jt->second];
+		auto &that_ve = *jt->second;
 		int sell_price = -1;
 		int buy_price = -1;
 		{
@@ -332,8 +330,8 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 				break;
 			}
 		}
-		cout << "Midpoint of " << that_ve.get_ename() << " at time " << tm
-		     << " is ";
+		cout << "Midpoint of " << that_ve.get_ename() << " at time "
+		     << tm << " is ";
 
 		if (sell_price != -1 && buy_price != -1) {
 			cout << "$" << (buy_price + sell_price) / 2;

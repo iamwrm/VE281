@@ -114,7 +114,8 @@ class Equity {
        public:
 	void median_push_back(const int &i);
 	void median_print(int tm);
-	std::string get_ename(){
+	std::string get_ename()
+	{
 		return E_name;
 	}
 	Equity(std::string name)
@@ -157,13 +158,13 @@ class Midpoint_Listen_List {
 };
 
 struct Pool {
-	std::map<std::string, int> curr_e_names;
+	std::map<std::string, std::shared_ptr<Equity>> curr_e_names; // -> ve
 
 	std::map<std::string, int> client_names;
 
 	std::vector<One_Line_Order> va;
 
-	std::vector<Equity> ve;
+	//std::vector<Equity> ve;
 
 	std::vector<Client> vc;
 
