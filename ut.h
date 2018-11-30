@@ -41,13 +41,6 @@ struct One_Line_Order {
 		char em;
 		ss1 >> e_name >> em >> price >> em >> number >> expire_time;
 	}
-	void print()
-	{
-		std::cout << ID << " " << time_stamp << " " << client_name
-			  << " " << is_buy << " " << e_name << " " << price
-			  << " " << number << " " << expire_time << " "
-			  << std::endl;
-	}
 };
 
 struct Flags {
@@ -164,8 +157,6 @@ struct Pool {
 
 	std::vector<One_Line_Order> va;
 
-	//std::vector<Equity> ve;
-
 	std::vector<Client> vc;
 
 	int commission = 0;
@@ -192,5 +183,7 @@ void put_in_ve(Pool &pool, One_Line_Order &olo);
 void pay_commission(Pool &pool, const int &number, const int &price);
 void print_all_equity_median(Pool &pool, int tm);
 void print_all_equity_midpoint(Pool &pool, int tm);
+void add_to_midpoint_listen_list(Pool &pool, const One_Line_Order &olo,
+				 Flags &flags);
 
 #endif  // UT_H

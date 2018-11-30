@@ -3,13 +3,13 @@
 void print_end_of_day(Pool &pool, Flags &flag)
 {
 	cout << "---End of Day---\n";
-	cout << "Commission Earnings: $" << pool.commission << std::endl;
+	cout << "Commission Earnings: $" << pool.commission << "\n";
 	cout << "Total Amount of Money Transferred: $"
-	     << pool.total_money_transferred << std::endl;
+	     << pool.total_money_transferred << "\n";
 	cout << "Number of Completed Trades: " << pool.completed_trades_num
-	     << std::endl;
+	     << "\n";
 	cout << "Number of Shares Traded: " << pool.num_of_shares_traded
-	     << std::endl;
+	     << "\n";
 	// print final transfer
 	if (flag.t_flag) {
 		for (auto it : pool.client_names) {
@@ -36,8 +36,6 @@ void print_end_of_day(Pool &pool, Flags &flag)
 void put_in_vettt(Pool &pool, const One_Line_Order &olo, Flags &flags)
 {
 	for (auto ge_name : flags.g_e_names) {
-		// std::cerr << ge_name << std::endl;
-
 		if (ge_name != olo.e_name) {
 			continue;
 		}
@@ -52,25 +50,6 @@ void put_in_vettt(Pool &pool, const One_Line_Order &olo, Flags &flags)
 
 		Equity_ttt &the_equity_ttt = pool.ve_ttt[it->second];
 		the_equity_ttt.push_back(olo);
-		// std::cerr << olo.e_name << std::endl;
-	}
-}
-void add_to_midpoint_listen_list(Pool &pool, const One_Line_Order &olo,
-				 Flags &flags)
-{
-	auto it = pool.midpoint_listen_list.names.find(olo.e_name);
-	if (it == pool.midpoint_listen_list.names.end()) {
-		// new listen name
-		pool.midpoint_listen_list.names.emplace(
-		    std::make_pair(olo.e_name, 0));
-
-		// add to ve
-		auto it = pool.curr_e_names.find(olo.e_name);
-		if (it == pool.curr_e_names.end()) {
-			// new equity
-			pool.curr_e_names.emplace(std::make_pair(
-			    olo.e_name, std::make_shared<Equity>(olo.e_name)));
-		}
 	}
 }
 
@@ -81,8 +60,6 @@ int main(int argc, char **argv)
 
 	Flags flags;
 	get_ops(argc, argv, flags);
-
-	// std::cerr << "flags ge num:" << flags.g_e_names.size() << std::endl;
 
 	int order_id = 0;
 

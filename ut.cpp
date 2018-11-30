@@ -445,3 +445,22 @@ void Equity_ttt::end_ttt_result_1(int &buy_time, int &sell_time)
 		}
 	}
 }
+
+void add_to_midpoint_listen_list(Pool &pool, const One_Line_Order &olo,
+				 Flags &flags)
+{
+	auto it = pool.midpoint_listen_list.names.find(olo.e_name);
+	if (it == pool.midpoint_listen_list.names.end()) {
+		// new listen name
+		pool.midpoint_listen_list.names.emplace(
+		    std::make_pair(olo.e_name, 0));
+
+		// add to ve
+		auto it = pool.curr_e_names.find(olo.e_name);
+		if (it == pool.curr_e_names.end()) {
+			// new equity
+			pool.curr_e_names.emplace(std::make_pair(
+			    olo.e_name, std::make_shared<Equity>(olo.e_name)));
+		}
+	}
+}
