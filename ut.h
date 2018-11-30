@@ -76,13 +76,6 @@ class Median_E {
 };
 
 // TODO:
-class Midpoint_E {
-	vector<int> data;
-
-       public:
-	void push_back();
-	int get_m();
-};
 
 class Compare_s {
        public:
@@ -116,7 +109,6 @@ class Compare_b {
 class Equity {
 	vector<One_Line_Order> v_for_ttt;
 	Median_E median_e;
-	Midpoint_E midpoint_e;
 
        public:
 	std::string E_name;
@@ -155,6 +147,8 @@ struct Pool {
 	int completed_trades_num = 0;
 	int total_money_transferred = 0;
 	int num_of_shares_traded = 0;
+
+
 };
 
 // void get_ops(int argc,char ** argv int&, int&);
@@ -166,5 +160,9 @@ bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
 			  const int &cur_time_stamp, Flags flags);
 void trans_msg(Pool &pool, One_Line_Order buyer, One_Line_Order seller, int num,
 	       int price, Flags flags);
+void put_in_ve(Pool &pool, One_Line_Order &olo);
+void pay_commission(Pool &pool, const int &number, const int &price);
+void print_all_equity_median(Pool &pool, int tm);
+void print_all_equity_midpoint(Pool &pool, int tm);
 
 #endif  // UT_H
