@@ -292,8 +292,9 @@ void print_all_equity_median(Pool &pool, int tm)
 void print_all_equity_midpoint(Pool &pool, int tm)
 {
 	// interate through all equity
-	for (auto it : pool.curr_e_names) {
-		auto &that_ve = pool.ve[it.second];
+	for (auto it : pool.midpoint_listen_list.names) {
+		auto jt = pool.curr_e_names.find(it.first);
+		auto &that_ve = pool.ve[jt->second];
 		int sell_price = -1;
 		int buy_price = -1;
 		{

@@ -152,6 +152,10 @@ class Equity_ttt {
 	void end_ttt_result(int &buy_time, int &sell_time);
 };
 
+class Midpoint_Listen_List {
+       public:
+	std::map<std::string, int> names;
+};
 
 struct Pool {
 	std::map<std::string, int> curr_e_names;
@@ -167,6 +171,8 @@ struct Pool {
 
 	std::vector<Equity_ttt> ve_ttt;
 	std::map<std::string, int> ve_ttt_names;
+
+	Midpoint_Listen_List midpoint_listen_list;
 };
 
 // void get_ops(int argc,char ** argv int&, int&);

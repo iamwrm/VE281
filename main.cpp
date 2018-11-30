@@ -55,6 +55,26 @@ void put_in_vettt(Pool &pool, const One_Line_Order &olo, Flags &flags)
 		// std::cerr << olo.e_name << std::endl;
 	}
 }
+void add_to_midpoint_listen_list(Pool &pool, const One_Line_Order &olo,
+				 Flags &flags)
+{
+	auto it = pool.midpoint_listen_list.names.find(olo.e_name);
+	if (it == pool.midpoint_listen_list.names.end()) {
+		// new listen name
+		pool.midpoint_listen_list.names.emplace(
+		    std::make_pair(olo.e_name, 0));
+
+		// add to ve
+		auto it = pool.curr_e_names.find(olo.e_name);
+		if (it == pool.curr_e_names.end()) {
+			// new equity
+			pool.ve.emplace_back(Equity());
+			pool.curr_e_names.emplace(
+			    std::make_pair(olo.e_name, pool.ve.size() - 1));
+			pool.ve[pool.ve.size() - 1].E_name = olo.e_name;
+		}
+	}
+}
 
 int main(int argc, char **argv)
 {
@@ -92,6 +112,8 @@ int main(int argc, char **argv)
 
 			// check expired order DONE:
 		}
+
+		add_to_midpoint_listen_list(pool, olo, flags);
 
 		// match trade
 		bool trade_success =
