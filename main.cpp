@@ -78,6 +78,9 @@ void add_to_midpoint_listen_list(Pool &pool, const One_Line_Order &olo,
 
 int main(int argc, char **argv)
 {
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(0);
+
 	Flags flags;
 	get_ops(argc, argv, flags);
 
