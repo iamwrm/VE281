@@ -120,15 +120,6 @@ class Equity {
 	    buy_pq;
 };
 
-struct Argu_Order {
-	One_Line_Order olo;
-	int valid;
-	Argu_Order(One_Line_Order olo_input, int valid_input)
-	    : olo(olo_input), valid(valid_input)
-	{
-	}
-};
-
 struct Client {
 	std::string C_name;
 	int buy_num = 0;
@@ -161,9 +152,12 @@ struct Pool {
 	std::map<std::string, int> curr_e_names;
 	std::map<std::string, int> client_names;
 
-	std::vector<Argu_Order> va;
+	std::vector<One_Line_Order> va;
+
 	std::vector<Equity> ve;
+
 	std::vector<Client> vc;
+
 	int commission = 0;
 	int completed_trades_num = 0;
 	int total_money_transferred = 0;

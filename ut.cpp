@@ -70,7 +70,7 @@ bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
 		}
 		int top_order_id = the_pq.top().ID;
 
-		One_Line_Order &olo_pq = pool.va[top_order_id].olo;
+		One_Line_Order &olo_pq = pool.va[top_order_id];
 
 		if (olo_pq.expire_time != -1 &&
 		    olo_pq.expire_time + olo_pq.time_stamp <= cur_time_stamp) {
@@ -131,7 +131,7 @@ bool find_seller_and_trade(Pool &pool, One_Line_Order &olo,
 		}
 		int top_order_id = the_pq.top().ID;
 
-		One_Line_Order &olo_pq = pool.va[top_order_id].olo;
+		One_Line_Order &olo_pq = pool.va[top_order_id];
 
 		if (olo_pq.expire_time != -1 &&
 		    olo_pq.expire_time + olo_pq.time_stamp <= cur_time_stamp) {
@@ -303,7 +303,7 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 				int top_order_id = the_pq.top().ID;
 
 				One_Line_Order &olo_pq =
-				    pool.va[top_order_id].olo;
+				    pool.va[top_order_id];
 
 				if (olo_pq.expire_time != -1 &&
 				    olo_pq.expire_time + olo_pq.time_stamp <=
@@ -322,7 +322,7 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 				int top_order_id = the_pq.top().ID;
 
 				One_Line_Order &olo_pq =
-				    pool.va[top_order_id].olo;
+				    pool.va[top_order_id];
 
 				if (olo_pq.expire_time != -1 &&
 				    olo_pq.expire_time + olo_pq.time_stamp <=

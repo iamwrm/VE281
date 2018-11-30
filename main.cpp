@@ -126,7 +126,7 @@ int main(int argc, char **argv)
 				       pool, olo, current_time_stamp, flags);
 
 		// put in va
-		pool.va.emplace_back((Argu_Order(olo, 1)));
+		pool.va.emplace_back(olo);
 
 		if (trade_success || !olo.expire_time) {
 			continue;
