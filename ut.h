@@ -150,11 +150,11 @@ struct Pool {
 
 	std::map<std::string, std::shared_ptr<Equity>> curr_e_names;  // -> ve
 	std::map<std::string, int> client_names;
-	std::unordered_map<std::string, int> ve_ttt_names;
+	std::unordered_map<std::string, std::shared_ptr<Equity_ttt>>
+	    ve_ttt_names;
 
 	std::unordered_map<int, One_Line_Order> va;
 	std::vector<Client> vc;
-	std::vector<Equity_ttt> ve_ttt;
 
 	Midpoint_Listen_List midpoint_listen_list;
 };

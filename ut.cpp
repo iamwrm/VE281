@@ -430,7 +430,7 @@ void print_end_of_day(Pool &pool, Flags &flag)
 	// print ttt
 	for (auto ttt_name : flag.g_e_names) {
 		auto it = pool.ve_ttt_names.find(ttt_name);
-		auto &e = pool.ve_ttt[it->second];
+		auto &e = *it->second;
 		int bt, st;
 		e.end_ttt_result_1(bt, st);
 		cout << "Time travelers would buy " << e.E_t_name
@@ -448,13 +448,12 @@ void put_in_vettt(Pool &pool, const One_Line_Order &olo, Flags &flags)
 
 		auto it = pool.ve_ttt_names.find(ge_name);
 		if (it == pool.ve_ttt_names.end()) {
-			pool.ve_ttt.emplace_back(Equity_ttt(ge_name));
-			pool.ve_ttt_names.emplace(
-			    std::make_pair(ge_name, pool.ve_ttt.size() - 1));
+			pool.ve_ttt_names.emplace(std::make_pair(
+			    ge_name, std::make_shared<Equity_ttt>(olo.e_name)));
 		}
 		it = pool.ve_ttt_names.find(ge_name);
 
-		Equity_ttt &the_equity_ttt = pool.ve_ttt[it->second];
+		Equity_ttt &the_equity_ttt = *it->second;
 		the_equity_ttt.push_back(olo);
 	}
 }
