@@ -45,6 +45,7 @@ bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
 				  flags);
 			olo.number -= trade_num;
 			olo_pq.number -= trade_num;
+			pool.va.erase(olo_pq.ID);
 			the_pq.pop();
 			continue;
 		} else {
@@ -107,6 +108,7 @@ bool find_seller_and_trade(Pool &pool, One_Line_Order &olo,
 				  flags);
 			olo.number -= trade_num;
 			olo_pq.number -= trade_num;
+			pool.va.erase(olo_pq.ID);
 			the_pq.pop();
 			continue;
 		} else {

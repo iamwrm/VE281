@@ -68,5 +68,7 @@ int main(int argc, char **argv)
 
 	print_end_of_day(pool, flags);
 
+	//std::cerr << pool.va.size() << std::endl;
+
 	exit(0);
 }
