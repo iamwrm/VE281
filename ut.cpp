@@ -306,7 +306,7 @@ void Equity_ttt::end_ttt_result_1(int &buy_time, int &sell_time)
 	int sell_price = -1;
 	int profit = -1;
 	int i = 0;
-	for (i = 0; i < vo.size(); i++) {
+	for (i = 0; i < vo.size(); ++i) {
 		auto &olo = vo[i];
 		if (!olo.is_buy) {
 			// olo is a seller

@@ -105,8 +105,6 @@ struct Client {
 	int net_trans = 0;
 };
 
-
-// TODO:
 struct One_Line_Order_for_ttt {
 	bool is_buy;
 	int price;
@@ -149,7 +147,7 @@ struct Pool {
 	std::map<std::string, int> client_names;
 	std::unordered_map<std::string, int> ve_ttt_names;
 
-	std::unordered_map<int,One_Line_Order> va;
+	std::unordered_map<int, One_Line_Order> va;
 	std::vector<Client> vc;
 	std::vector<Equity_ttt> ve_ttt;
 
