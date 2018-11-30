@@ -42,7 +42,7 @@ struct Order_for_pq {
 };
 class Compare_s {
        public:
-	bool operator()(Order_for_pq o1, Order_for_pq o2)
+	bool operator()(const Order_for_pq &o1, const Order_for_pq &o2)
 	{
 		if (o1.price > o2.price) {
 			return true;
@@ -56,7 +56,7 @@ class Compare_s {
 };
 class Compare_b {
        public:
-	bool operator()(Order_for_pq o1, Order_for_pq o2)
+	bool operator()(const Order_for_pq &o1, const Order_for_pq &o2)
 	{
 		if (o1.price < o2.price) {
 			return true;
@@ -72,7 +72,7 @@ class Compare_b {
 class Median_E {
 	vector<int> data;
 	std::priority_queue<int> s;
-	std::priority_queue<int,vector<int>,std::greater<int>> g;
+	std::priority_queue<int, vector<int>, std::greater<int>> g;
 	int med = -1;
 
        public:
