@@ -195,7 +195,7 @@ int Median_E::get_m()
 	if (size > 0) {
 		int median = (size % 2 == 1)
 				 ? (data[size / 2])
-				 : ((data[size / 2]) + data[size / 2 - 1]);
+				 : ((data[size / 2] + data[size / 2 - 1]) / 2);
 		return median;
 	} else {
 		return -1;

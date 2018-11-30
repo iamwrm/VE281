@@ -57,7 +57,6 @@ void print_all_equity_median(Pool &pool, int tm)
 	for (auto it : pool.curr_e_names) {
 		auto &that_ve = pool.ve[it.second];
 		that_ve.median_print(tm);
-		// print if not empty
 	}
 }
 
@@ -118,7 +117,7 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 	}
 }
 
-void print_end_of_day(Pool pool, Flags flag)
+void print_end_of_day(Pool &pool, Flags &flag)
 {
 	cout << "---End of Day---\n";
 	cout << "Commission Earnings: $" << pool.commission << std::endl;
@@ -134,11 +133,6 @@ int main(int argc, char **argv)
 {
 	Flags flags;
 	get_ops(argc, argv, flags);
-
-	// std::cout << flags.g_num;
-	// for (auto a : flags.g_e_names) {
-	//  std::cout << a << std::endl;
-	// }
 
 	int order_id = 0;
 
