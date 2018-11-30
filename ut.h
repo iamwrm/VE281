@@ -147,6 +147,11 @@ struct Equity_ttt {
 	{
 		vo.push_back((olo));
 	}
+	void end_ttt_result(int &buy_time, int &sell_time)
+	{
+		buy_time = 1;
+		sell_time = 2;
+	};
 };
 
 struct Pool {

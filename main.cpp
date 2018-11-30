@@ -18,11 +18,21 @@ void print_end_of_day(Pool &pool, Flags &flag)
 		     << c.sell_num << " for a net transfer of $" << c.net_trans
 		     << "\n";
 	}
+
+	// print ttt
+	for (auto it : pool.ve_ttt_names) {
+		auto &e = pool.ve_ttt[it.second];
+		int bt, st;
+		e.end_ttt_result(bt, st);
+		cout << "Time travelers would buy " << e.E_t_name
+		     << "at time: " << bt << " and sell it at time: " << st
+		     << "\n";
+	}
 }
 void put_in_vettt(Pool &pool, const One_Line_Order &olo, Flags &flags)
 {
 	for (auto ge_name : flags.g_e_names) {
-		//std::cerr << ge_name << std::endl;
+		// std::cerr << ge_name << std::endl;
 
 		if (ge_name != olo.e_name) {
 			continue;
@@ -38,7 +48,7 @@ void put_in_vettt(Pool &pool, const One_Line_Order &olo, Flags &flags)
 
 		Equity_ttt &the_equity_ttt = pool.ve_ttt[it->second];
 		the_equity_ttt.push_back(olo);
-		 //std::cerr << olo.e_name << std::endl;
+		// std::cerr << olo.e_name << std::endl;
 	}
 }
 
