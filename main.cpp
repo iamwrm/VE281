@@ -51,16 +51,19 @@ void trans_msg(Pool &pool, One_Line_Order buyer, One_Line_Order seller, int num,
 	// register buyer and seller
 }
 
-void print_all_equity_median(Pool &pool, int tm, Flags flags)
+void print_all_equity_median(Pool &pool, int tm)
 {
 	// interate through all equity
 	for (auto it : pool.curr_e_names) {
 		auto &that_ve = pool.ve[it.second];
-		if (flags.m_flag) {
-			that_ve.median_print(tm);
-		}
+		that_ve.median_print(tm);
 		// print if not empty
 	}
+}
+
+void print_all_equity_midpoint(Pool &pool, int tm)
+{
+
 }
 
 void print_end_of_day(Pool pool, Flags flag)
@@ -97,13 +100,20 @@ int main(int argc, char **argv)
 
 		if (current_time_stamp != olo.time_stamp) {
 			// print median
-			print_all_equity_median(pool, current_time_stamp,flags);
+			if (flags.m_flag) {
+				print_all_equity_median(pool,
+							current_time_stamp);
+			}
 
 			// print midpoint
+			if (flags.p_flag) {
+				print_all_equity_midpoint(pool,
+							  current_time_stamp);
+			}
 
 			current_time_stamp = olo.time_stamp;
 
-			// check expired order
+			// check expired order DONE:
 		}
 
 		// match trade
