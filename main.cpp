@@ -48,9 +48,8 @@ void trans_msg(Pool &pool, One_Line_Order buyer, One_Line_Order seller, int num,
 	    pool.ve[pool.curr_e_names.find(buyer.e_name)->second];
 	the_equity.median_push_back(price);
 
-	// register buyer
-	{
-		auto &that_client = buyer;
+	auto f = [](Pool &pool,
+		    decltype(buyer) &that_client) -> decltype(pool.vc[0]) & {
 		auto it = pool.client_names.find(that_client.client_name);
 		if (it == pool.client_names.end()) {
 			// no this name
@@ -63,24 +62,17 @@ void trans_msg(Pool &pool, One_Line_Order buyer, One_Line_Order seller, int num,
 		it = pool.client_names.find(that_client.client_name);
 
 		auto &client_found = pool.vc[it->second];
+		return client_found;
+	};
+	// register buyer
+	{
+		auto &client_found = f(pool, buyer);
 		client_found.buy_num += num;
 		client_found.net_trans -= num * price;
 	}
 	// register seller
 	{
-		auto &that_client = seller;
-		auto it = pool.client_names.find(that_client.client_name);
-		if (it == pool.client_names.end()) {
-			// no this name
-			pool.vc.emplace_back(Client());
-			pool.vc[pool.vc.size() - 1].C_name =
-			    that_client.client_name;
-			pool.client_names.emplace(std::make_pair(
-			    that_client.client_name, pool.vc.size() - 1));
-		}
-		it = pool.client_names.find(that_client.client_name);
-
-		auto &client_found = pool.vc[it->second];
+		auto &client_found = f(pool, seller);
 		client_found.sell_num += num;
 		client_found.net_trans += num * price;
 	}
