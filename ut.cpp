@@ -142,10 +142,52 @@ void Equity::median_print(int tm)
 
 void Median_E::push_back(int i)
 {
-	data.push_back(i);
+	push_back_pq(i);
+	// data.push_back(i);
 }
+
+void Median_E::push_back_pq(int x)
+{
+	if (s.size() == 0 && g.size() == 0) {
+		s.push(x);
+		med = x;
+		return;
+	}
+	if (s.size() > g.size()) {
+		if (x < med) {
+			g.push(s.top());
+			s.pop();
+			s.push(x);
+		} else {
+			g.push(x);
+		}
+
+		med = (s.top() + g.top()) / 2;
+
+	} else if (s.size() == g.size()) {
+		if (x < med) {
+			s.push(x);
+			med = s.top();
+		} else {
+			g.push(x);
+			med = g.top();
+		}
+	} else {
+		if (x > med) {
+			s.push(g.top());
+			g.pop();
+			g.push(x);
+		} else {
+			s.push(x);
+		}
+
+		med = (s.top() + g.top()) / 2;
+	}
+}
+
 int Median_E::get_m()
 {
+	return get_m_pq();
 	std::sort(data.begin(), data.end());
 	int size = data.size();
 	if (size > 0) {
@@ -157,6 +199,11 @@ int Median_E::get_m()
 		return -1;
 	}
 }
+int Median_E::get_m_pq()
+{
+	return med;
+}
+
 void put_in_ve(Pool &pool, One_Line_Order &olo)
 {
 	auto it = pool.curr_e_names.find(olo.e_name);

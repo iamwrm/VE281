@@ -71,10 +71,15 @@ class Compare_b {
 
 class Median_E {
 	vector<int> data;
+	std::priority_queue<int> s;
+	std::priority_queue<int,vector<int>,std::greater<int>> g;
+	int med = -1;
 
        public:
 	void push_back(int i);
+	void push_back_pq(int i);
 	int get_m();
+	int get_m_pq();
 };
 
 class Equity {
