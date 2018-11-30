@@ -298,15 +298,6 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 	}
 }
 
-void Equity_ttt::end_ttt_result(int &buy_time, int &sell_time)
-{
-	buy_time = -1;
-	sell_time = -1;
-
-	end_ttt_result_1(buy_time, sell_time);
-	return;
-}
-
 void Equity_ttt::end_ttt_result_1(int &buy_time, int &sell_time)
 {
 	buy_time = -1;
@@ -392,7 +383,7 @@ void print_end_of_day(Pool &pool, Flags &flag)
 		auto it = pool.ve_ttt_names.find(ttt_name);
 		auto &e = pool.ve_ttt[it->second];
 		int bt, st;
-		e.end_ttt_result(bt, st);
+		e.end_ttt_result_1(bt, st);
 		cout << "Time travelers would buy " << e.E_t_name
 		     << " at time: " << bt << " and sell it at time: " << st
 		     << "\n";

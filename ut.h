@@ -105,6 +105,8 @@ struct Client {
 	int net_trans = 0;
 };
 
+
+// TODO:
 struct One_Line_Order_for_ttt {
 	bool is_buy;
 	int price;
@@ -129,7 +131,6 @@ class Equity_ttt {
 		vo.emplace_back(One_Line_Order_for_ttt(olo.is_buy, olo.price,
 						       olo.time_stamp));
 	}
-	void end_ttt_result(int &buy_time, int &sell_time);
 	void end_ttt_result_1(int &buy_time, int &sell_time);
 };
 
@@ -146,7 +147,7 @@ struct Pool {
 
 	std::map<std::string, std::shared_ptr<Equity>> curr_e_names;  // -> ve
 	std::map<std::string, int> client_names;
-	std::map<std::string, int> ve_ttt_names;
+	std::unordered_map<std::string, int> ve_ttt_names;
 
 	std::unordered_map<int,One_Line_Order> va;
 	std::vector<Client> vc;
