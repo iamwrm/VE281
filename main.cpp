@@ -5,20 +5,19 @@ void put_in_ve(Pool &pool, One_Line_Order &olo)
 	auto it = pool.curr_e_names.find(olo.e_name);
 	if (it == pool.curr_e_names.end()) {
 		// new equity
-		pool.ve.emplace_back(std::move(Equity()));
+		pool.ve.emplace_back(Equity());
 		pool.curr_e_names.emplace(
 		    std::make_pair(olo.e_name, pool.ve.size() - 1));
+		pool.ve[pool.ve.size() - 1].E_name = olo.e_name;
 	}
 	it = pool.curr_e_names.find(olo.e_name);
 
 	Equity &the_equity = pool.ve[it->second];
 
 	if (olo.is_buy) {
-		the_equity.buy_pq.emplace(
-		    std::move(Order_for_pq(olo.ID, olo.price)));
+		the_equity.buy_pq.emplace((Order_for_pq(olo.ID, olo.price)));
 	} else {
-		the_equity.sell_pq.emplace(
-		    std::move(Order_for_pq(olo.ID, olo.price)));
+		the_equity.sell_pq.emplace((Order_for_pq(olo.ID, olo.price)));
 	}
 }
 
@@ -44,7 +43,24 @@ void trans_msg(Pool &pool, One_Line_Order buyer, One_Line_Order seller, int num,
 	pool.total_money_transferred += price * num;
 	pool.num_of_shares_traded += num;
 
+	// median
+	auto &the_equity =
+	    pool.ve[pool.curr_e_names.find(buyer.e_name)->second];
+	the_equity.median_push_back(price);
+
 	// register buyer and seller
+}
+
+void print_all_equity_median(Pool &pool, int tm, Flags flags)
+{
+	// interate through all equity
+	for (auto it : pool.curr_e_names) {
+		auto &that_ve = pool.ve[it.second];
+		if (flags.m_flag) {
+			that_ve.median_print(tm);
+		}
+		// print if not empty
+	}
 }
 
 void print_end_of_day(Pool pool, Flags flag)
@@ -81,6 +97,7 @@ int main(int argc, char **argv)
 
 		if (current_time_stamp != olo.time_stamp) {
 			// print median
+			print_all_equity_median(pool, current_time_stamp,flags);
 
 			// print midpoint
 
@@ -97,7 +114,7 @@ int main(int argc, char **argv)
 				       pool, olo, current_time_stamp, flags);
 
 		// put in va
-		pool.va.emplace_back(std::move(Argu_Order(olo, 1)));
+		pool.va.emplace_back((Argu_Order(olo, 1)));
 
 		if (trade_success || !olo.expire_time) {
 			continue;

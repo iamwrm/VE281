@@ -1,6 +1,7 @@
 #ifndef UT_H
 #define UT_H
 #include <getopt.h>
+#include <algorithm>
 #include <cstdio>
 #include <cstdlib>
 #include <iostream>
@@ -66,7 +67,57 @@ struct Order_for_pq {
 	}
 };
 
-struct Equity {
+class Median_E {
+	vector<int> data;
+
+       public:
+	void push_back(int i)
+	{
+		data.push_back(i);
+	}
+	int get_m()
+	{
+		std::sort(data.begin(), data.end());
+		int size = data.size();
+		if (size > 0) {
+			int median =
+			    (size % 2 == 1)
+				? (data[size / 2])
+				: ((data[size / 2]) + data[size / 2 - 1]);
+			return median;
+		} else {
+			return -1;
+		}
+	}
+};
+class Midpoint_E {
+	vector<int> data;
+
+       public:
+	void push_back();
+	int get_m();
+};
+
+class Equity {
+	vector<One_Line_Order> v_for_ttt;
+	Median_E median_e;
+	Midpoint_E midpoint_e;
+
+       public:
+	std::string E_name;
+	void median_push_back(const int &i)
+	{
+		median_e.push_back(i);
+	}
+	void median_print(int tm)
+	{
+		int median = median_e.get_m();
+		if (median != -1) {
+			std::cout << "Median match price of " << E_name
+				  << " at time " << tm << " is $" << median
+				  << "\n";
+		}
+	}
 	class Compare_s {
 	       public:
 		bool operator()(Order_for_pq o1, Order_for_pq o2)
