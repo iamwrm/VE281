@@ -8,14 +8,14 @@ using std::string;
 using std::vector;
 
 struct One_Line_Order {
-	int time_stamp;
-	std::string client_name;
 	bool is_buy;
-	std::string e_name;
+	int time_stamp;
 	int price;
 	int number;
 	int expire_time;
 	int ID;
+	std::string client_name;
+	std::string e_name;
 
        public:
 	void read(std::string line, int &order_id)
@@ -78,8 +78,8 @@ class Median_E {
 };
 
 class Equity {
-	Median_E median_e;
 	std::string E_name;
+	Median_E median_e;
 
        public:
 	void median_push_back(const int &i);
@@ -139,21 +139,17 @@ class Midpoint_Listen_List {
 };
 
 struct Pool {
-	std::map<std::string, std::shared_ptr<Equity>> curr_e_names;  // -> ve
-
-	std::map<std::string, int> client_names;
-
-	std::vector<One_Line_Order> va;
-
-	std::vector<Client> vc;
-
 	int commission = 0;
 	int completed_trades_num = 0;
 	int total_money_transferred = 0;
 	int num_of_shares_traded = 0;
-
-	std::vector<Equity_ttt> ve_ttt;
+	std::map<std::string, std::shared_ptr<Equity>> curr_e_names;  // -> ve
+	std::map<std::string, int> client_names;
 	std::unordered_map<std::string, int> ve_ttt_names;
+
+	std::vector<One_Line_Order> va;
+	std::vector<Client> vc;
+	std::vector<Equity_ttt> ve_ttt;
 
 	Midpoint_Listen_List midpoint_listen_list;
 };
