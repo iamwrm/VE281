@@ -124,7 +124,7 @@ class Equity_ttt {
 
 class Midpoint_Listen_List {
        public:
-	std::map<std::string, int> names;
+	std::set<std::string> names;
 };
 
 struct Pool {

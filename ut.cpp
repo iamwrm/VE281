@@ -242,7 +242,7 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 {
 	// interate through all equity
 	for (auto it : pool.midpoint_listen_list.names) {
-		auto jt = pool.curr_e_names.find(it.first);
+		auto jt = pool.curr_e_names.find(it);
 		auto &that_ve = *jt->second;
 		int sell_price = -1;
 		int buy_price = -1;
@@ -404,8 +404,7 @@ void add_to_midpoint_listen_list(Pool &pool, const One_Line_Order &olo,
 	auto it = pool.midpoint_listen_list.names.find(olo.e_name);
 	if (it == pool.midpoint_listen_list.names.end()) {
 		// new listen name
-		pool.midpoint_listen_list.names.emplace(
-		    std::make_pair(olo.e_name, 0));
+		pool.midpoint_listen_list.names.emplace(olo.e_name);
 
 		// add to ve
 		auto it = pool.curr_e_names.find(olo.e_name);
