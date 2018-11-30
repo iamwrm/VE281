@@ -71,31 +71,46 @@ class Median_E {
 	vector<int> data;
 
        public:
-	void push_back(int i)
-	{
-		data.push_back(i);
-	}
-	int get_m()
-	{
-		std::sort(data.begin(), data.end());
-		int size = data.size();
-		if (size > 0) {
-			int median =
-			    (size % 2 == 1)
-				? (data[size / 2])
-				: ((data[size / 2]) + data[size / 2 - 1]);
-			return median;
-		} else {
-			return -1;
-		}
-	}
+	void push_back(int i);
+	int get_m();
 };
+
+// TODO:
 class Midpoint_E {
 	vector<int> data;
 
        public:
 	void push_back();
 	int get_m();
+};
+
+class Compare_s {
+       public:
+	bool operator()(Order_for_pq o1, Order_for_pq o2)
+	{
+		if (o1.price > o2.price) {
+			return true;
+		} else if (o1.price == o2.price) {
+			if (o1.ID > o2.ID) {
+				return true;
+			}
+		}
+		return false;
+	}
+};
+class Compare_b {
+       public:
+	bool operator()(Order_for_pq o1, Order_for_pq o2)
+	{
+		if (o1.price < o2.price) {
+			return true;
+		} else if (o1.price == o2.price) {
+			if (o1.ID > o2.ID) {
+				return true;
+			}
+		}
+		return false;
+	}
 };
 
 class Equity {
@@ -105,47 +120,8 @@ class Equity {
 
        public:
 	std::string E_name;
-	void median_push_back(const int &i)
-	{
-		median_e.push_back(i);
-	}
-	void median_print(int tm)
-	{
-		int median = median_e.get_m();
-		if (median != -1) {
-			std::cout << "Median match price of " << E_name
-				  << " at time " << tm << " is $" << median
-				  << "\n";
-		}
-	}
-	class Compare_s {
-	       public:
-		bool operator()(Order_for_pq o1, Order_for_pq o2)
-		{
-			if (o1.price > o2.price) {
-				return true;
-			} else if (o1.price == o2.price) {
-				if (o1.ID > o2.ID) {
-					return true;
-				}
-			}
-			return false;
-		}
-	};
-	class Compare_b {
-	       public:
-		bool operator()(Order_for_pq o1, Order_for_pq o2)
-		{
-			if (o1.price < o2.price) {
-				return true;
-			} else if (o1.price == o2.price) {
-				if (o1.ID > o2.ID) {
-					return true;
-				}
-			}
-			return false;
-		}
-	};
+	void median_push_back(const int &i);
+	void median_print(int tm);
 	std::priority_queue<Order_for_pq, vector<Order_for_pq>, Compare_s>
 	    sell_pq;
 	std::priority_queue<Order_for_pq, vector<Order_for_pq>, Compare_b>

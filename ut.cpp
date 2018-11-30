@@ -170,3 +170,34 @@ bool find_seller_and_trade(Pool &pool, One_Line_Order &olo,
 	return false;
 }
 
+void Equity::median_push_back(const int &i)
+{
+	median_e.push_back(i);
+}
+
+void Equity::median_print(int tm)
+{
+	int median = median_e.get_m();
+	if (median != -1) {
+		std::cout << "Median match price of " << E_name << " at time "
+			  << tm << " is $" << median << "\n";
+	}
+}
+
+void Median_E::push_back(int i)
+{
+	data.push_back(i);
+}
+int Median_E::get_m()
+{
+	std::sort(data.begin(), data.end());
+	int size = data.size();
+	if (size > 0) {
+		int median = (size % 2 == 1)
+				 ? (data[size / 2])
+				 : ((data[size / 2]) + data[size / 2 - 1]);
+		return median;
+	} else {
+		return -1;
+	}
+}
