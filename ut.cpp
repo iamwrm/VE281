@@ -1,51 +1,5 @@
 #include "ut.h"
 
-void get_ops(int argc, char **argv, Flags &flags)
-{
-	int c;
-
-	while (1) {
-		static struct option long_options[] = {
-		    {"verbose", no_argument, 0, 'v'},
-		    {"transfers", no_argument, 0, 't'},
-		    {"median", no_argument, 0, 'm'},
-		    {"midpoint", no_argument, 0, 'p'},
-		    {"ttt", required_argument, 0, 'g'},
-		    {0, 0, 0, 0}};
-		/* getopt_long stores the option index here. */
-		int option_index = 0;
-
-		c = getopt_long(argc, argv, "vtmpg:", long_options,
-				&option_index);
-
-		/* Detect the end of the options. */
-		if (c == -1) break;
-
-		switch (c) {
-			case 'v':
-				flags.v_flag = 1;
-				break;
-			case 't':
-				flags.t_flag = 1;
-				break;
-			case 'm':
-				flags.m_flag = 1;
-				break;
-			case 'p':
-				flags.p_flag = 1;
-				break;
-
-			case 'g':
-				flags.g_num++;
-				flags.g_e_names.push_back(std::string(optarg));
-				break;
-			default:
-				abort();
-		}
-	}
-	return;
-}
-
 bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
 			  const int &cur_time_stamp, Flags flags)
 {
@@ -460,5 +414,58 @@ void add_to_midpoint_listen_list(Pool &pool, const One_Line_Order &olo,
 			pool.curr_e_names.emplace(std::make_pair(
 			    olo.e_name, std::make_shared<Equity>(olo.e_name)));
 		}
+	}
+}
+
+void print_end_of_day(Pool &pool, Flags &flag)
+{
+	cout << "---End of Day---\n";
+	cout << "Commission Earnings: $" << pool.commission << "\n";
+	cout << "Total Amount of Money Transferred: $"
+	     << pool.total_money_transferred << "\n";
+	cout << "Number of Completed Trades: " << pool.completed_trades_num
+	     << "\n";
+	cout << "Number of Shares Traded: " << pool.num_of_shares_traded
+	     << "\n";
+	// print final transfer
+	if (flag.t_flag) {
+		for (auto it : pool.client_names) {
+			auto &c = pool.vc[it.second];
+			cout << c.C_name << " bought " << c.buy_num
+			     << " and sold " << c.sell_num
+			     << " for a net transfer of $" << c.net_trans
+			     << "\n";
+		}
+	}
+
+	// print ttt
+	for (auto ttt_name : flag.g_e_names) {
+		auto it = pool.ve_ttt_names.find(ttt_name);
+		auto &e = pool.ve_ttt[it->second];
+		int bt, st;
+		e.end_ttt_result(bt, st);
+		cout << "Time travelers would buy " << e.E_t_name
+		     << " at time: " << bt << " and sell it at time: " << st
+		     << "\n";
+	}
+}
+
+void put_in_vettt(Pool &pool, const One_Line_Order &olo, Flags &flags)
+{
+	for (auto ge_name : flags.g_e_names) {
+		if (ge_name != olo.e_name) {
+			continue;
+		}
+
+		auto it = pool.ve_ttt_names.find(ge_name);
+		if (it == pool.ve_ttt_names.end()) {
+			pool.ve_ttt.emplace_back(Equity_ttt(ge_name));
+			pool.ve_ttt_names.emplace(
+			    std::make_pair(ge_name, pool.ve_ttt.size() - 1));
+		}
+		it = pool.ve_ttt_names.find(ge_name);
+
+		Equity_ttt &the_equity_ttt = pool.ve_ttt[it->second];
+		the_equity_ttt.push_back(olo);
 	}
 }

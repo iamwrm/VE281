@@ -2,7 +2,6 @@
 #ifndef UT_H
 #define UT_H
 
-
 using std::cin;
 using std::cout;
 using std::string;
@@ -34,15 +33,6 @@ struct One_Line_Order {
 	}
 };
 
-struct Flags {
-	int v_flag = 0;
-	int t_flag = 0;
-	int m_flag = 0;
-	int p_flag = 0;
-	int g_num = 0;
-	vector<string> g_e_names;
-};
-
 struct Order_for_pq {
 	int ID;
 	int price;
@@ -50,17 +40,6 @@ struct Order_for_pq {
 	{
 	}
 };
-
-class Median_E {
-	vector<int> data;
-
-       public:
-	void push_back(int i);
-	int get_m();
-};
-
-// TODO:
-
 class Compare_s {
        public:
 	bool operator()(Order_for_pq o1, Order_for_pq o2)
@@ -88,6 +67,14 @@ class Compare_b {
 		}
 		return false;
 	}
+};
+
+class Median_E {
+	vector<int> data;
+
+       public:
+	void push_back(int i);
+	int get_m();
 };
 
 class Equity {
@@ -142,7 +129,7 @@ class Midpoint_Listen_List {
 };
 
 struct Pool {
-	std::map<std::string, std::shared_ptr<Equity>> curr_e_names; // -> ve
+	std::map<std::string, std::shared_ptr<Equity>> curr_e_names;  // -> ve
 
 	std::map<std::string, int> client_names;
 
@@ -156,14 +143,13 @@ struct Pool {
 	int num_of_shares_traded = 0;
 
 	std::vector<Equity_ttt> ve_ttt;
-	std::map<std::string, int> ve_ttt_names;
+	std::unordered_map<std::string, int> ve_ttt_names;
 
 	Midpoint_Listen_List midpoint_listen_list;
 };
 
 // void get_ops(int argc,char ** argv int&, int&);
 
-void get_ops(int argc, char **argv, Flags &flags);
 bool find_seller_and_trade(Pool &pool, One_Line_Order &olo,
 			   const int &cur_time_stamp, Flags flags);
 bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
@@ -176,5 +162,8 @@ void print_all_equity_median(Pool &pool, int tm);
 void print_all_equity_midpoint(Pool &pool, int tm);
 void add_to_midpoint_listen_list(Pool &pool, const One_Line_Order &olo,
 				 Flags &flags);
+
+void print_end_of_day(Pool &pool, Flags &flag);
+void put_in_vettt(Pool &pool, const One_Line_Order &olo, Flags &flags);
 
 #endif  // UT_H
