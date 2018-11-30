@@ -136,6 +136,19 @@ struct Client {
 	int net_trans = 0;
 };
 
+struct Equity_ttt {
+	std::string E_t_name;
+	vector<One_Line_Order> vo;
+	Equity_ttt(std::string name)
+	{
+		E_t_name = name;
+	}
+	void push_back(const One_Line_Order olo)
+	{
+		vo.push_back((olo));
+	}
+};
+
 struct Pool {
 	std::map<std::string, int> curr_e_names;
 	std::map<std::string, int> client_names;
@@ -148,7 +161,8 @@ struct Pool {
 	int total_money_transferred = 0;
 	int num_of_shares_traded = 0;
 
-
+	std::vector<Equity_ttt> ve_ttt;
+	std::map<std::string, int> ve_ttt_names;
 };
 
 // void get_ops(int argc,char ** argv int&, int&);

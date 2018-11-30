@@ -1,6 +1,5 @@
 #include "ut.h"
 
-
 void print_end_of_day(Pool &pool, Flags &flag)
 {
 	cout << "---End of Day---\n";
@@ -20,11 +19,35 @@ void print_end_of_day(Pool &pool, Flags &flag)
 		     << "\n";
 	}
 }
+void put_in_vettt(Pool &pool, const One_Line_Order &olo, Flags &flags)
+{
+	for (auto ge_name : flags.g_e_names) {
+		//std::cerr << ge_name << std::endl;
+
+		if (ge_name != olo.e_name) {
+			continue;
+		}
+
+		auto it = pool.ve_ttt_names.find(ge_name);
+		if (it == pool.ve_ttt_names.end()) {
+			pool.ve_ttt.emplace_back(Equity_ttt(ge_name));
+			pool.ve_ttt_names.emplace(
+			    std::make_pair(ge_name, pool.ve_ttt.size() - 1));
+		}
+		it = pool.ve_ttt_names.find(ge_name);
+
+		Equity_ttt &the_equity_ttt = pool.ve_ttt[it->second];
+		the_equity_ttt.push_back(olo);
+		 //std::cerr << olo.e_name << std::endl;
+	}
+}
 
 int main(int argc, char **argv)
 {
 	Flags flags;
 	get_ops(argc, argv, flags);
+
+	// std::cerr << "flags ge num:" << flags.g_e_names.size() << std::endl;
 
 	int order_id = 0;
 
@@ -35,6 +58,8 @@ int main(int argc, char **argv)
 	while (getline(cin, line)) {
 		One_Line_Order olo;
 		olo.read(line, order_id);
+
+		put_in_vettt(pool, olo, flags);
 
 		if (current_time_stamp != olo.time_stamp) {
 			// print median
