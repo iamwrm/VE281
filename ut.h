@@ -1,16 +1,7 @@
+#include "bot.h"
 #ifndef UT_H
 #define UT_H
-#include <getopt.h>
-#include <algorithm>
-#include <cstdio>
-#include <cstdlib>
-#include <iostream>
-#include <map>
-#include <memory>
-#include <queue>
-#include <sstream>
-#include <string>
-#include <vector>
+
 
 using std::cin;
 using std::cout;

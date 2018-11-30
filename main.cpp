@@ -14,8 +14,6 @@ void print_end_of_day(Pool &pool, Flags &flag)
 	if (flag.t_flag) {
 		for (auto it : pool.client_names) {
 			auto &c = pool.vc[it.second];
-			// BluthCorp bought 50 and sold 22 for a net transfer of
-			// $-3900
 			cout << c.C_name << " bought " << c.buy_num
 			     << " and sold " << c.sell_num
 			     << " for a net transfer of $" << c.net_trans
@@ -24,8 +22,9 @@ void print_end_of_day(Pool &pool, Flags &flag)
 	}
 
 	// print ttt
-	for (auto it : pool.ve_ttt_names) {
-		auto &e = pool.ve_ttt[it.second];
+	for (auto ttt_name : flag.g_e_names) {
+		auto it = pool.ve_ttt_names.find(ttt_name);
+		auto &e = pool.ve_ttt[it->second];
 		int bt, st;
 		e.end_ttt_result(bt, st);
 		cout << "Time travelers would buy " << e.E_t_name

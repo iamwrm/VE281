@@ -23,11 +23,9 @@ void get_ops(int argc, char **argv, Flags &flags)
 
 		switch (c) {
 			case 'v':
-				// puts("option -v\n");
 				flags.v_flag = 1;
 				break;
 			case 't':
-				// puts("option -t\n");
 				flags.t_flag = 1;
 				break;
 			case 'm':
