@@ -11,12 +11,16 @@ void print_end_of_day(Pool &pool, Flags &flag)
 	cout << "Number of Shares Traded: " << pool.num_of_shares_traded
 	     << std::endl;
 	// print final transfer
-	for (auto it : pool.client_names) {
-		auto &c = pool.vc[it.second];
-		// BluthCorp bought 50 and sold 22 for a net transfer of $-3900
-		cout << c.C_name << " bought " << c.buy_num << " and sold "
-		     << c.sell_num << " for a net transfer of $" << c.net_trans
-		     << "\n";
+	if (flag.t_flag) {
+		for (auto it : pool.client_names) {
+			auto &c = pool.vc[it.second];
+			// BluthCorp bought 50 and sold 22 for a net transfer of
+			// $-3900
+			cout << c.C_name << " bought " << c.buy_num
+			     << " and sold " << c.sell_num
+			     << " for a net transfer of $" << c.net_trans
+			     << "\n";
+		}
 	}
 
 	// print ttt

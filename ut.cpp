@@ -233,7 +233,7 @@ void trans_msg(Pool &pool, One_Line_Order buyer, One_Line_Order seller, int num,
 	       int price, Flags flags)
 {
 	pay_commission(pool, num, price);
-	if (flags.t_flag) {
+	if (flags.v_flag) {
 		std::cout << buyer.client_name << " purchased " << num
 			  << " shares of " << buyer.e_name << " from "
 			  << seller.client_name << " for $" << price
