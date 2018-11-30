@@ -48,7 +48,42 @@ void trans_msg(Pool &pool, One_Line_Order buyer, One_Line_Order seller, int num,
 	    pool.ve[pool.curr_e_names.find(buyer.e_name)->second];
 	the_equity.median_push_back(price);
 
-	// register buyer and seller
+	// register buyer
+	{
+		auto &that_client = buyer;
+		auto it = pool.client_names.find(that_client.client_name);
+		if (it == pool.client_names.end()) {
+			// no this name
+			pool.vc.emplace_back(Client());
+			pool.vc[pool.vc.size() - 1].C_name =
+			    that_client.client_name;
+			pool.client_names.emplace(std::make_pair(
+			    that_client.client_name, pool.vc.size() - 1));
+		}
+		it = pool.client_names.find(that_client.client_name);
+
+		auto &client_found = pool.vc[it->second];
+		client_found.buy_num += num;
+		client_found.net_trans -= num * price;
+	}
+	// register seller
+	{
+		auto &that_client = seller;
+		auto it = pool.client_names.find(that_client.client_name);
+		if (it == pool.client_names.end()) {
+			// no this name
+			pool.vc.emplace_back(Client());
+			pool.vc[pool.vc.size() - 1].C_name =
+			    that_client.client_name;
+			pool.client_names.emplace(std::make_pair(
+			    that_client.client_name, pool.vc.size() - 1));
+		}
+		it = pool.client_names.find(that_client.client_name);
+
+		auto &client_found = pool.vc[it->second];
+		client_found.sell_num += num;
+		client_found.net_trans += num * price;
+	}
 }
 
 void print_all_equity_median(Pool &pool, int tm)
@@ -127,6 +162,14 @@ void print_end_of_day(Pool &pool, Flags &flag)
 	     << std::endl;
 	cout << "Number of Shares Traded: " << pool.num_of_shares_traded
 	     << std::endl;
+	// print final transfer
+	for (auto it : pool.client_names) {
+		auto &c = pool.vc[it.second];
+		// BluthCorp bought 50 and sold 22 for a net transfer of $-3900
+		cout << c.C_name << " bought " << c.buy_num << " and sold "
+		     << c.sell_num << " for a net transfer of $" << c.net_trans
+		     << "\n";
+	}
 }
 
 int main(int argc, char **argv)

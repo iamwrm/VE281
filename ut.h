@@ -137,11 +137,20 @@ struct Argu_Order {
 	}
 };
 
+struct Client {
+	std::string C_name;
+	int buy_num = 0;
+	int sell_num = 0;
+	int net_trans = 0;
+};
+
 struct Pool {
 	std::map<std::string, int> curr_e_names;
+	std::map<std::string, int> client_names;
 
 	std::vector<Argu_Order> va;
 	std::vector<Equity> ve;
+	std::vector<Client> vc;
 	int commission = 0;
 	int completed_trades_num = 0;
 	int total_money_transferred = 0;
