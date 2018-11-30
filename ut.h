@@ -78,7 +78,6 @@ class Median_E {
 };
 
 class Equity {
-	vector<One_Line_Order> v_for_ttt;
 	Median_E median_e;
 	std::string E_name;
 
