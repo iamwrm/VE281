@@ -138,9 +138,10 @@ class Equity_ttt {
 	}
 	void push_back(const One_Line_Order olo)
 	{
-		vo.push_back((olo));
+		vo.push_back(olo);
 	}
 	void end_ttt_result(int &buy_time, int &sell_time);
+	void end_ttt_result_1(int &buy_time, int &sell_time);
 };
 
 class Midpoint_Listen_List {

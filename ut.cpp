@@ -302,8 +302,7 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 			while (!the_pq.empty()) {
 				int top_order_id = the_pq.top().ID;
 
-				One_Line_Order &olo_pq =
-				    pool.va[top_order_id];
+				One_Line_Order &olo_pq = pool.va[top_order_id];
 
 				if (olo_pq.expire_time != -1 &&
 				    olo_pq.expire_time + olo_pq.time_stamp <=
@@ -321,8 +320,7 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 			while (!the_pq.empty()) {
 				int top_order_id = the_pq.top().ID;
 
-				One_Line_Order &olo_pq =
-				    pool.va[top_order_id];
+				One_Line_Order &olo_pq = pool.va[top_order_id];
 
 				if (olo_pq.expire_time != -1 &&
 				    olo_pq.expire_time + olo_pq.time_stamp <=
@@ -351,6 +349,9 @@ void Equity_ttt::end_ttt_result(int &buy_time, int &sell_time)
 {
 	buy_time = -1;
 	sell_time = -1;
+
+	end_ttt_result_1(buy_time, sell_time);
+	return;
 
 	int sell_price = -1;
 	int buy_price = -1;
@@ -402,6 +403,47 @@ void Equity_ttt::end_ttt_result(int &buy_time, int &sell_time)
 			    sell_price - buy_price) {
 				sell_time = new_sell_time;
 				sell_price = new_sell_price;
+			}
+		}
+	}
+}
+
+void Equity_ttt::end_ttt_result_1(int &buy_time, int &sell_time)
+{
+	buy_time = -1;
+	sell_time = -1;
+	int buy_price = -1;
+	int sell_price = -1;
+	int profit = -1;
+	int i = 0;
+	for (i = 0; i < vo.size(); i++) {
+		auto &olo = vo[i];
+		if (!olo.is_buy) {
+			// olo is a seller
+			// int olo_sell_price = olo.price;
+
+			int buyer_max_price = -1;
+			int buyer_max_time = -1;
+			for (int j = i; j < vo.size(); j++) {
+				auto &olo1 = vo[j];
+				if (olo1.is_buy) {
+					// olo is a buyer
+					if (olo1.price > buyer_max_price) {
+						buyer_max_price = olo1.price;
+						buyer_max_time =
+						    olo1.time_stamp;
+					}
+				}
+			}
+
+			if (buyer_max_price > -1) {
+				if (buyer_max_price - olo.price > profit) {
+					buy_time = olo.time_stamp;
+					buy_price = olo.price;
+					sell_time = buyer_max_time;
+					sell_price = buyer_max_price;
+					profit = buyer_max_price - olo.price;
+				}
 			}
 		}
 	}
