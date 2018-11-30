@@ -105,8 +105,18 @@ struct Client {
 	int net_trans = 0;
 };
 
+struct One_Line_Order_for_ttt {
+	bool is_buy;
+	int price;
+	int time_stamp;
+	One_Line_Order_for_ttt(bool is_buy, int price, int time_stamp)
+	    : is_buy(is_buy), price(price), time_stamp(time_stamp)
+	{
+	}
+};
+
 class Equity_ttt {
-	vector<One_Line_Order> vo;
+	vector<One_Line_Order_for_ttt> vo;
 
        public:
 	std::string E_t_name;
@@ -116,7 +126,8 @@ class Equity_ttt {
 	}
 	void push_back(const One_Line_Order olo)
 	{
-		vo.push_back(olo);
+		vo.push_back(One_Line_Order_for_ttt(olo.is_buy, olo.price,
+						    olo.time_stamp));
 	}
 	void end_ttt_result(int &buy_time, int &sell_time);
 	void end_ttt_result_1(int &buy_time, int &sell_time);
