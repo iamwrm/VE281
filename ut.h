@@ -70,7 +70,7 @@ class Compare_b {
 };
 
 class Median_E {
-	vector<int> data;
+	// vector<int> data;
 	std::priority_queue<int> s;
 	std::priority_queue<int, vector<int>, std::greater<int>> g;
 	int med = -1;

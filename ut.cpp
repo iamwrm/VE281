@@ -188,16 +188,16 @@ void Median_E::push_back_pq(int x)
 int Median_E::get_m()
 {
 	return get_m_pq();
-	std::sort(data.begin(), data.end());
-	int size = data.size();
-	if (size > 0) {
-		int median = (size % 2 == 1)
-				 ? (data[size / 2])
-				 : ((data[size / 2] + data[size / 2 - 1]) / 2);
-		return median;
-	} else {
-		return -1;
-	}
+	// std::sort(data.begin(), data.end());
+	// int size = data.size();
+	// if (size > 0) {
+	// 	int median = (size % 2 == 1)
+	// 			 ? (data[size / 2])
+	// 			 : ((data[size / 2] + data[size / 2 - 1]) / 2);
+	// 	return median;
+	// } else {
+	// 	return -1;
+	// }
 }
 int Median_E::get_m_pq()
 {
