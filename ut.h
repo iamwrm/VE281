@@ -124,10 +124,10 @@ class Equity_ttt {
 	{
 		E_t_name = name;
 	}
-	void push_back(const One_Line_Order olo)
+	void push_back(const One_Line_Order &olo)
 	{
-		vo.push_back(One_Line_Order_for_ttt(olo.is_buy, olo.price,
-						    olo.time_stamp));
+		vo.emplace_back(One_Line_Order_for_ttt(olo.is_buy, olo.price,
+						       olo.time_stamp));
 	}
 	void end_ttt_result(int &buy_time, int &sell_time);
 	void end_ttt_result_1(int &buy_time, int &sell_time);
@@ -143,9 +143,10 @@ struct Pool {
 	int completed_trades_num = 0;
 	int total_money_transferred = 0;
 	int num_of_shares_traded = 0;
+
 	std::map<std::string, std::shared_ptr<Equity>> curr_e_names;  // -> ve
 	std::map<std::string, int> client_names;
-	std::unordered_map<std::string, int> ve_ttt_names;
+	std::map<std::string, int> ve_ttt_names;
 
 	std::vector<One_Line_Order> va;
 	std::vector<Client> vc;

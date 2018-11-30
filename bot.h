@@ -20,7 +20,6 @@ struct Flags {
 	int t_flag = 0;
 	int m_flag = 0;
 	int p_flag = 0;
-	int g_num = 0;
 	std::vector<std::string> g_e_names;
 };
 

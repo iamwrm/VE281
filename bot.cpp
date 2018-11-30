@@ -36,8 +36,8 @@ void get_ops(int argc, char **argv, Flags &flags)
 				break;
 
 			case 'g':
-				flags.g_num++;
-				flags.g_e_names.push_back(std::string(optarg));
+				flags.g_e_names.emplace_back(
+				    std::string(optarg));
 				break;
 			default:
 				abort();
