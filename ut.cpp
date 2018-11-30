@@ -27,6 +27,7 @@ bool find_buyer_and_trade(Pool &pool, One_Line_Order &olo,
 		if (olo_pq.expire_time != -1 &&
 		    olo_pq.expire_time + olo_pq.time_stamp <= cur_time_stamp) {
 			// expired
+			pool.va.erase(olo_pq.ID);
 			the_pq.pop();
 			continue;
 		}
@@ -88,6 +89,7 @@ bool find_seller_and_trade(Pool &pool, One_Line_Order &olo,
 		if (olo_pq.expire_time != -1 &&
 		    olo_pq.expire_time + olo_pq.time_stamp <= cur_time_stamp) {
 			// expired
+			pool.va.erase(olo_pq.ID);
 			the_pq.pop();
 			continue;
 		}
@@ -257,6 +259,7 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 				    olo_pq.expire_time + olo_pq.time_stamp <=
 					tm) {
 					// expired
+					pool.va.erase(olo_pq.ID);
 					the_pq.pop();
 					continue;
 				}
@@ -275,6 +278,7 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 				    olo_pq.expire_time + olo_pq.time_stamp <=
 					tm) {
 					// expired
+					pool.va.erase(olo_pq.ID);
 					the_pq.pop();
 					continue;
 				}

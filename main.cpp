@@ -1,6 +1,5 @@
 #include "ut.h"
 
-
 int main(int argc, char **argv)
 {
 	std::ios::sync_with_stdio(false);
@@ -35,7 +34,6 @@ int main(int argc, char **argv)
 			}
 
 			current_time_stamp = olo.time_stamp;
-
 		}
 
 		add_to_midpoint_listen_list(pool, olo, flags);
@@ -48,7 +46,8 @@ int main(int argc, char **argv)
 				       pool, olo, current_time_stamp, flags);
 
 		// put in va
-		pool.va.emplace_back(olo);
+		pool.va.emplace(std::make_pair(order_id, olo));
+		order_id++;
 
 		if (trade_success || !olo.expire_time) {
 			continue;

@@ -20,7 +20,7 @@ struct One_Line_Order {
        public:
 	void read(std::string line, int &order_id)
 	{
-		ID = order_id++;
+		ID = order_id;
 		std::stringstream ss1(line);
 		string string_buffer;
 
@@ -148,7 +148,7 @@ struct Pool {
 	std::map<std::string, int> client_names;
 	std::map<std::string, int> ve_ttt_names;
 
-	std::vector<One_Line_Order> va;
+	std::unordered_map<int,One_Line_Order> va;
 	std::vector<Client> vc;
 	std::vector<Equity_ttt> ve_ttt;
 
