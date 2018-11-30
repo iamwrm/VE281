@@ -136,9 +136,11 @@ struct Client {
 	int net_trans = 0;
 };
 
-struct Equity_ttt {
-	std::string E_t_name;
+class Equity_ttt {
 	vector<One_Line_Order> vo;
+
+       public:
+	std::string E_t_name;
 	Equity_ttt(std::string name)
 	{
 		E_t_name = name;
@@ -147,12 +149,9 @@ struct Equity_ttt {
 	{
 		vo.push_back((olo));
 	}
-	void end_ttt_result(int &buy_time, int &sell_time)
-	{
-		buy_time = 1;
-		sell_time = 2;
-	};
+	void end_ttt_result(int &buy_time, int &sell_time);
 };
+
 
 struct Pool {
 	std::map<std::string, int> curr_e_names;

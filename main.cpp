@@ -25,7 +25,7 @@ void print_end_of_day(Pool &pool, Flags &flag)
 		int bt, st;
 		e.end_ttt_result(bt, st);
 		cout << "Time travelers would buy " << e.E_t_name
-		     << "at time: " << bt << " and sell it at time: " << st
+		     << " at time: " << bt << " and sell it at time: " << st
 		     << "\n";
 	}
 }

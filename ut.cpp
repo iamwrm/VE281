@@ -345,3 +345,63 @@ void print_all_equity_midpoint(Pool &pool, int tm)
 		cout << "\n";
 	}
 }
+
+void Equity_ttt::end_ttt_result(int &buy_time, int &sell_time)
+{
+	buy_time = -1;
+	sell_time = -1;
+
+	int sell_price = -1;
+	int buy_price = -1;
+
+	int new_buy_time = -1;    // new buy time time stamp
+	int new_buy_price = -1;   // new buy time time stamp
+	int new_sell_time = -1;   // new buy time time stamp
+	int new_sell_price = -1;  // new buy time time stamp
+
+	int i = 0;
+
+	// first seller
+	for (i = 0; i < vo.size(); i++) {
+		auto &olo = vo[i];
+		if (!olo.is_buy) {
+			buy_time = olo.time_stamp;
+			buy_price = olo.price;
+			i++;
+			break;
+		}
+	}
+
+	for (; i < vo.size(); i++) {
+		auto &olo = vo[i];
+
+		if (olo.is_buy && olo.price > sell_price) {
+			// higher buyer
+			sell_time = olo.time_stamp;
+			sell_price = olo.price;
+		}
+
+		if (new_sell_time > -1) {
+			if (olo.is_buy && olo.price > new_sell_price) {
+				// higher buyer
+				new_sell_time = olo.time_stamp;
+				new_sell_price = olo.price;
+			}
+		}
+
+		if (!olo.is_buy && olo.price < buy_price) {
+			// lower seller
+			new_buy_time = olo.time_stamp;
+			new_buy_price = olo.price;
+			new_sell_price = -1;
+		}
+
+		if (new_buy_price > 0 && new_buy_time > 0) {
+			if ((new_sell_price - new_buy_price) >
+			    sell_price - buy_price) {
+				sell_time = new_sell_time;
+				sell_price = new_sell_price;
+			}
+		}
+	}
+}
