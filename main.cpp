@@ -1,5 +1,7 @@
+#include <iomanip>
 #include <iostream>
 #include <limits>
+#include <sstream>
 #include <string>
 #include <vector>
 
@@ -23,10 +25,14 @@ class Graph {
 	{
 		for (int i = 0; i < num; i++) {
 			for (int j = 0; j < num; j++) {
-				cout << arr[i][j] << " ";
+				cout << std::setw(10) << arr[i][j] << " ";
 			}
 			cout << "\n";
 		}
+	}
+	void add_edge(int from, int to, int weight)
+	{
+		arr[from][to] = weight;
 	}
 };
 
@@ -36,12 +42,16 @@ int main()
 	cin >> size;
 	// cout << size;
 	Graph g1(size);
-	g1.print_graph();
 
 	string line;
 	while (getline(cin, line)) {
 		// cout << line << endl;
+		std::stringstream ss1(line);
+		int from, to, weight;
+		ss1 >> from >> to >> weight;
+		g1.add_edge(from, to, weight);
 	}
+	g1.print_graph();
 
 	return 0;
 }
