@@ -75,6 +75,8 @@ class Graph {
 
 int main()
 {
+	std::ios::sync_with_stdio(false);
+	std::cin.tie(0);
 	int size;
 	cin >> size;
 	Graph g1(size);
@@ -87,9 +89,13 @@ int main()
 		ss1 >> from >> to >> weight;
 		g1.add_edge(from, to, weight);
 	}
-	g1.print_graph();
+	// g1.print_graph();
 
-	cout << "\nisdag:" << g1.is_dag();
+	if (g1.is_dag()) {
+		cout << "The graph is a DAG";
+	} else {
+		cout << "The graph is not a DAG";
+	}
 
 	return 0;
 }
