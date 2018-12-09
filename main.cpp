@@ -92,9 +92,9 @@ int main()
 	// g1.print_graph();
 
 	if (g1.is_dag()) {
-		cout << "The graph is a DAG";
+		cout << "The graph is a DAG\n";
 	} else {
-		cout << "The graph is not a DAG";
+		cout << "The graph is not a DAG\n";
 	}
 
 	return 0;
