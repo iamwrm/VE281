@@ -24,6 +24,8 @@ class Graph {
 	vector<vector<int> > arr;
 	vector<Node> node_list;
 	int num;
+	bool _has_mst = false;
+	
 	bool cyc_chk(int v, std::set<int> s)
 	{
 		if (s.find(v) != s.end()) {
@@ -40,6 +42,23 @@ class Graph {
 			}
 		}
 		return false;
+	}
+	bool has_mst()
+	{
+		return _has_mst;
+	}
+	bool is_dag()
+	{
+		for (int i = 0; i < num; i++) {
+			if (cyc_chk(i, std::set<int>())) {
+				return false;
+			}
+		}
+		return true;
+	}
+	void add_edge(int from, int to, int weight)
+	{
+		arr[from][to] = weight;
 	}
 
        public:
@@ -58,18 +77,32 @@ class Graph {
 			cout << "\n";
 		}
 	}
-	void add_edge(int from, int to, int weight)
+	void read_from_cin()
 	{
-		arr[from][to] = weight;
-	}
-	bool is_dag()
-	{
-		for (int i = 0; i < num; i++) {
-			if (cyc_chk(i, std::set<int>())) {
-				return false;
-			}
+		string line;
+		while (getline(cin, line)) {
+			if (line.empty()) continue;
+			std::stringstream ss1(line);
+			int from, to, weight;
+			ss1 >> from >> to >> weight;
+			add_edge(from, to, weight);
 		}
-		return true;
+	}
+	void print_is_dag()
+	{
+		if (is_dag()) {
+			cout << "The graph is a DAG\n";
+		} else {
+			cout << "The graph is not a DAG\n";
+		}
+	}
+	void print_mst()
+	{
+		if (has_mst()) {
+			cout << "The total weight of MST is " << 12 << "\n";
+		} else {
+			cout << "No MST exists!\n";
+		}
 	}
 };
 
@@ -81,21 +114,10 @@ int main()
 	cin >> size;
 	Graph g1(size);
 
-	string line;
-	while (getline(cin, line)) {
-		if (line.empty()) continue;
-		std::stringstream ss1(line);
-		int from, to, weight;
-		ss1 >> from >> to >> weight;
-		g1.add_edge(from, to, weight);
-	}
-	// g1.print_graph();
+	g1.read_from_cin();
+	g1.print_is_dag();
 
-	if (g1.is_dag()) {
-		cout << "The graph is a DAG\n";
-	} else {
-		cout << "The graph is not a DAG\n";
-	}
+	g1.print_mst();
 
 	return 0;
 }
