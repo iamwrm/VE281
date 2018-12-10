@@ -1,6 +1,7 @@
 #include <iomanip>
 #include <iostream>
 #include <limits>
+#include <memory>
 #include <set>
 #include <sstream>
 #include <string>
@@ -15,17 +16,28 @@ using std::string;
 using std::vector;
 
 class Node {
-	bool is_visited = false;
-
        public:
+	int from;
+	Node(int f) : from(f)
+	{
+	}
+};
+class Edge {
+       public:
+	int from;
+	int to;
+	Edge(int f, int t) : from(f), to(t)
+	{
+	}
 };
 
 class Graph {
 	vector<vector<int> > arr;
-	vector<Node> node_list;
+	std::shared_ptr<vector<Edge> > edge_list_ptr;
+	std::shared_ptr<vector<Node> > node_list_ptr;
 	int num;
 	bool _has_mst = false;
-	
+
 	bool cyc_chk(int v, std::set<int> s)
 	{
 		if (s.find(v) != s.end()) {
@@ -59,14 +71,31 @@ class Graph {
 	void add_edge(int from, int to, int weight)
 	{
 		arr[from][to] = weight;
+		edge_list_ptr->push_back((Edge(from, to)));
+	}
+	void convert_to_undirected()
+	{
+		for (auto e : *edge_list_ptr) {
+			int f = e.from;
+			int t = e.to;
+			arr[t][f] = arr[f][t];
+		}
+	}
+	void add_node(int from)
+	{
+		node_list_ptr->push_back(Node(from));
+	}
+	void prim()
+	{
+		_has_mst = false;
 	}
 
        public:
-	Graph(int size)
-	    : num(size),
-	      arr(size, vector<int>(size, MAX_INT)),
-	      node_list(size, Node())
+	Graph(int size) : num(size), arr(size, vector<int>(size, MAX_INT))
+	//,node_list(size, Node())
 	{
+		edge_list_ptr = std::make_shared<vector<Edge> >();
+		node_list_ptr = std::make_shared<vector<Node> >();
 	}
 	void print_graph()
 	{
@@ -86,6 +115,7 @@ class Graph {
 			int from, to, weight;
 			ss1 >> from >> to >> weight;
 			add_edge(from, to, weight);
+			add_node(from);
 		}
 	}
 	void print_is_dag()
@@ -98,6 +128,8 @@ class Graph {
 	}
 	void print_mst()
 	{
+		convert_to_undirected();
+		prim();
 		if (has_mst()) {
 			cout << "The total weight of MST is " << 12 << "\n";
 		} else {
