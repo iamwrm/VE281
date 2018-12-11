@@ -78,7 +78,11 @@ class Graph {
 		for (auto e : *edge_list_ptr) {
 			int f = e.from;
 			int t = e.to;
-			arr[t][f] = arr[f][t];
+			if (arr[t][f] < arr[f][t]) {
+				arr[t][f] = arr[f][t];
+			} else {
+				arr[f][t] = arr[t][f];
+			}
 		}
 	}
 	void add_node(int from)
