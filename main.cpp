@@ -98,17 +98,26 @@ class Graph {
 	// DONE:
 	void convert_to_undirected()
 	{
-		for (int i = 0; i < edge_list_ptr->size(); i++) {
+		cout << edge_list_ptr->size() << endl;
+		int size = edge_list_ptr->size();
+		for (int i = 0; i < size; i++) {
 			auto e = (*edge_list_ptr)[i];
 			int f = e.from;
 			int t = e.to;
+
+			if (arr[f][t] < MAX_INT && arr[t][f] == MAX_INT) {
+				edge_list_ptr->push_back(Light_Edge(t, f));
+			}
+			if (arr[f][t] == MAX_INT && arr[t][f] < MAX_INT) {
+				edge_list_ptr->push_back(Light_Edge(f, t));
+			}
+
 			if (arr[f][t] < MAX_INT) {
 				if (arr[t][f] < arr[f][t]) {
 					arr[f][t] = arr[t][f];
 					edge_ptr_pool[f * num + t] =
 					    std::make_shared<Edge>(f, t,
 								   arr[t][f]);
-
 				} else {
 					arr[t][f] = arr[f][t];
 					edge_ptr_pool[t * num + f] =
@@ -117,6 +126,7 @@ class Graph {
 				}
 			}
 		}
+		//cout << edge_list_ptr->size() << endl;
 	}
 
 	void iter_through_node()
