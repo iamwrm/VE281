@@ -91,21 +91,28 @@ class Graph {
 			    std::make_shared<Edge>(from, to, weight);
 		}
 	}
+	// DONE:
 	void convert_to_undirected()
 	{
 		for (auto e : *edge_list_ptr) {
 			int f = e.from;
 			int t = e.to;
-			cout << f << t << arr[f][t] << endl;
 			if (arr[f][t] < MAX_INT) {
 				if (arr[t][f] < arr[f][t]) {
 					arr[f][t] = arr[t][f];
+					// edge_ptr_pool[f * num + t] =
+					// edge_ptr_pool[t * num + f];
 					edge_ptr_pool[f * num + t] =
-					    edge_ptr_pool[t * num + f];
+					    std::make_shared<Edge>(f, t,
+								   arr[t][f]);
+
 				} else {
 					arr[t][f] = arr[f][t];
+					// edge_ptr_pool[t * num + f] =
+					// edge_ptr_pool[f * num + t];
 					edge_ptr_pool[t * num + f] =
-					    edge_ptr_pool[f * num + t];
+					    std::make_shared<Edge>(t, f,
+								   arr[f][t]);
 				}
 			}
 		}
@@ -120,13 +127,16 @@ class Graph {
 		if (if_spanned[i] == true) {
 			for (int j = 0; j < num; j++) {
 				if (arr[i][j] < MAX_INT) {
-					if (if_spanned[i] == 0) {
+					if (if_spanned[j] == false) {
 						if (edge_ptr_pool[i * num +
 								  j]) {
-							cout << i << j;
 							pq1.emplace(
 							    edge_ptr_pool
 								[i * num + j]);
+							// cout<<"en queue
+							// "<<i<<" "<<j<<" "<<
+							// edge_ptr_pool [i * num
+							// + j] ->weight<<endl;
 						}
 					}
 				}
@@ -135,6 +145,7 @@ class Graph {
 	}
 	void prim()
 	{
+		// print_graph();
 		_has_mst = false;
 
 		if_spanned[0] = 1;
@@ -149,16 +160,26 @@ class Graph {
 				continue;
 			}
 			Edge::Ptr shortest_edge = pq1.top();
-			if (!shortest_edge) {
-				continue;
+			if (shortest_edge) {
+				// cout << "to true " <<
+				// shortest_edge->from<<shortest_edge->to <<
+				// endl;
+				if_spanned[shortest_edge->to] = true;
+				mst_val += shortest_edge->weight;
+				spanned_num++;
 			}
-			if_spanned[shortest_edge->to] = 1;
-			mst_val += shortest_edge->weight;
-			spanned_num++;
 			while (!pq1.empty()) {
 				pq1.pop();
 			}
+			/* 			cout << spanned_num << endl;
+
+						cout<<"if spanned ";
+						for (auto i : if_spanned) {
+							cout << i << " ";
+						}
+						cout<<"\n"; */
 		}
+
 		if (spanned_num != num) {
 			_has_mst = false;
 		} else {
@@ -210,10 +231,10 @@ class Graph {
 	void print_mst()
 	{
 		convert_to_undirected();
-		print_graph();
 		prim();
 		if (has_mst()) {
-			cout << "The total weight of MST is " << 12 << "\n";
+			cout << "The total weight of MST is " << mst_val
+			     << "\n";
 		} else {
 			cout << "No MST exists!\n";
 		}
@@ -230,7 +251,6 @@ int main()
 
 	g1.read_from_cin();
 	g1.print_is_dag();
-	g1.print_graph();
 
 	g1.print_mst();
 
