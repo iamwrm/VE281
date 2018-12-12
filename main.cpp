@@ -98,7 +98,7 @@ class Graph {
 	// DONE:
 	void convert_to_undirected()
 	{
-		cout << edge_list_ptr->size() << endl;
+		// cout << edge_list_ptr->size() << endl;
 		int size = edge_list_ptr->size();
 		for (int i = 0; i < size; i++) {
 			auto e = (*edge_list_ptr)[i];
@@ -126,13 +126,29 @@ class Graph {
 				}
 			}
 		}
-		//cout << edge_list_ptr->size() << endl;
+		// cout << edge_list_ptr->size() << endl;
 	}
 
 	void iter_through_node()
 	{
-		for (int i = 0; i < num; i++) {
-			add_all_edge_tobe(i);
+		int elp_size = edge_list_ptr->size();
+		for (int i = 0; i < elp_size; i++) {
+			if (if_spanned[(*edge_list_ptr)[i].from] &&
+			    !if_spanned[(*edge_list_ptr)[i].to]) {
+				int ii = (*edge_list_ptr)[i].from;
+				int jj = (*edge_list_ptr)[i].to;
+				if (pq1.empty()) {
+					pq1.emplace(
+					    edge_ptr_pool[ii * num + jj]);
+
+				} else if (pq1.top()->weight >
+					   edge_ptr_pool[ii * num + jj]
+					       ->weight) {
+					pq1.pop();
+					pq1.emplace(
+					    edge_ptr_pool[ii * num + jj]);
+				}
+			}
 		}
 	}
 
