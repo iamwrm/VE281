@@ -7,6 +7,7 @@
 #include <sstream>
 #include <string>
 #include <vector>
+#include <cassert>
 
 #define MAX_INT std::numeric_limits<int>::max()
 
@@ -16,13 +17,6 @@ using std::endl;
 using std::string;
 using std::vector;
 
-class Node {
-       public:
-	int from;
-	Node(int f) : from(f)
-	{
-	}
-};
 class Edge {
        public:
 	int from;
@@ -33,11 +27,22 @@ class Edge {
 	{
 	}
 };
+class Light_Edge {
+       public:
+	int from;
+	int to;
+	Light_Edge(int f, int t) : from(f), to(t)
+	{
+	}
+};
 
 class Graph {
 	vector<vector<int> > arr;
-	std::shared_ptr<vector<Edge> > edge_list_ptr;
+
+	std::shared_ptr<vector<Light_Edge> > edge_list_ptr;
+
 	vector<std::shared_ptr<Edge> > edge_ptr_pool;
+
 	vector<bool> if_spanned;
 	int num;
 	bool _has_mst = false;
@@ -83,7 +88,7 @@ class Graph {
 	void add_edge(int from, int to, int weight)
 	{
 		arr[from][to] = weight;
-		edge_list_ptr->push_back(Edge(from, to, weight));
+		edge_list_ptr->push_back(Light_Edge(from, to));
 
 		if (!edge_ptr_pool[from * num + to]) {
 			edge_ptr_pool[from * num + to] =
@@ -116,15 +121,14 @@ class Graph {
 	void add_all_edge_tobe(int i)
 	{
 		if (if_spanned[i] == true) {
+
 			for (int j = 0; j < num; j++) {
+
 				if (arr[i][j] < MAX_INT) {
+
 					if (if_spanned[j] == false) {
-						if (edge_ptr_pool[i * num +
-								  j]) {
-							pq1.emplace(
-							    edge_ptr_pool
-								[i * num + j]);
-						}
+						//assert(edge_ptr_pool [i * num + j]);
+						pq1.emplace( edge_ptr_pool [i * num + j]);
 					}
 				}
 			}
@@ -168,9 +172,12 @@ class Graph {
 	{
 		num = size;
 		arr = vector<vector<int> >(size, vector<int>(size, MAX_INT));
-		edge_list_ptr = std::make_shared<vector<Edge> >();
+
+		edge_list_ptr = std::make_shared<vector<Light_Edge> >();
+
 		edge_ptr_pool =
 		    vector<std::shared_ptr<Edge> >(num * num, nullptr);
+
 		if_spanned = vector<bool>(num, false);
 	}
 	void print_graph()
@@ -195,11 +202,11 @@ class Graph {
 	}
 	void print_is_dag()
 	{
-		if (is_dag()) {
-			cout << "The graph is a DAG\n";
-		} else {
-			cout << "The graph is not a DAG\n";
+		cout << "The graph is ";
+		if (!is_dag()) {
+			cout << "not ";
 		}
+		cout << "a DAG\n";
 	}
 	void print_mst()
 	{
