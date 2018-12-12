@@ -37,7 +37,6 @@ class Edge {
 class Graph {
 	vector<vector<int> > arr;
 	std::shared_ptr<vector<Edge> > edge_list_ptr;
-	std::shared_ptr<vector<Node> > node_list_ptr;
 	vector<std::shared_ptr<Edge> > edge_ptr_pool;
 	vector<bool> if_spanned;
 	int num;
@@ -100,26 +99,18 @@ class Graph {
 			if (arr[f][t] < MAX_INT) {
 				if (arr[t][f] < arr[f][t]) {
 					arr[f][t] = arr[t][f];
-					// edge_ptr_pool[f * num + t] =
-					// edge_ptr_pool[t * num + f];
 					edge_ptr_pool[f * num + t] =
 					    std::make_shared<Edge>(f, t,
 								   arr[t][f]);
 
 				} else {
 					arr[t][f] = arr[f][t];
-					// edge_ptr_pool[t * num + f] =
-					// edge_ptr_pool[f * num + t];
 					edge_ptr_pool[t * num + f] =
 					    std::make_shared<Edge>(t, f,
 								   arr[f][t]);
 				}
 			}
 		}
-	}
-	void add_node(int from)
-	{
-		node_list_ptr->push_back(Node(from));
 	}
 
 	void add_all_edge_tobe(int i)
@@ -133,10 +124,6 @@ class Graph {
 							pq1.emplace(
 							    edge_ptr_pool
 								[i * num + j]);
-							// cout<<"en queue
-							// "<<i<<" "<<j<<" "<<
-							// edge_ptr_pool [i * num
-							// + j] ->weight<<endl;
 						}
 					}
 				}
@@ -145,7 +132,6 @@ class Graph {
 	}
 	void prim()
 	{
-		// print_graph();
 		_has_mst = false;
 
 		if_spanned[0] = 1;
@@ -161,9 +147,6 @@ class Graph {
 			}
 			Edge::Ptr shortest_edge = pq1.top();
 			if (shortest_edge) {
-				// cout << "to true " <<
-				// shortest_edge->from<<shortest_edge->to <<
-				// endl;
 				if_spanned[shortest_edge->to] = true;
 				mst_val += shortest_edge->weight;
 				spanned_num++;
@@ -171,13 +154,6 @@ class Graph {
 			while (!pq1.empty()) {
 				pq1.pop();
 			}
-			/* 			cout << spanned_num << endl;
-
-						cout<<"if spanned ";
-						for (auto i : if_spanned) {
-							cout << i << " ";
-						}
-						cout<<"\n"; */
 		}
 
 		if (spanned_num != num) {
@@ -189,12 +165,10 @@ class Graph {
 
        public:
 	Graph(int size)
-	//,node_list(size, Node())
 	{
 		num = size;
 		arr = vector<vector<int> >(size, vector<int>(size, MAX_INT));
 		edge_list_ptr = std::make_shared<vector<Edge> >();
-		node_list_ptr = std::make_shared<vector<Node> >();
 		edge_ptr_pool =
 		    vector<std::shared_ptr<Edge> >(num * num, nullptr);
 		if_spanned = vector<bool>(num, false);
@@ -217,7 +191,6 @@ class Graph {
 			int from, to, weight;
 			ss1 >> from >> to >> weight;
 			add_edge(from, to, weight);
-			add_node(from);
 		}
 	}
 	void print_is_dag()
@@ -251,7 +224,6 @@ int main()
 
 	g1.read_from_cin();
 	g1.print_is_dag();
-
 	g1.print_mst();
 
 	return 0;
