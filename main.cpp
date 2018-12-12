@@ -36,38 +36,6 @@ class Light_Edge {
 	}
 };
 
-class My_PQ {
-	Edge::Ptr Min;
-
-       public:
-	My_PQ()
-	{
-		Min = nullptr;
-	}
-	bool empty()
-	{
-		return !Min;
-	}
-	void pop()
-	{
-		Min = nullptr;
-	}
-	Edge::Ptr top()
-	{
-		return Min;
-	}
-	void emplace(Edge::Ptr New)
-	{
-		if (Min) {
-			if (New->weight < Min->weight) {
-				Min = New;
-			}
-		} else {
-			Min = New;
-		}
-	}
-};
-
 class Graph {
 	vector<vector<int> > arr;
 
@@ -86,7 +54,6 @@ class Graph {
 		}
 	};
 	std::priority_queue<Edge::Ptr, vector<Edge::Ptr>, greater_t> pq1;
-	My_PQ pq2;
 
 	bool cyc_chk(int v, std::set<int> s)
 	{
@@ -167,10 +134,20 @@ class Graph {
 					if (if_spanned[j] == false) {
 						// assert(edge_ptr_pool [i * num
 						// + j]);
-						pq2.emplace(
-						    edge_ptr_pool[i * num + j]);
-						pq1.emplace(
-						    edge_ptr_pool[i * num + j]);
+						if (pq1.empty()) {
+							pq1.emplace(
+							    edge_ptr_pool
+								[i * num + j]);
+
+						} else if (pq1.top()->weight >
+							   edge_ptr_pool
+							       [i * num + j]
+								   ->weight) {
+							pq1.pop();
+							pq1.emplace(
+							    edge_ptr_pool
+								[i * num + j]);
+						}
 					}
 				}
 			}
@@ -196,7 +173,7 @@ class Graph {
 				spanned_num++;
 			}
 			while (!pq1.empty()) {
-				pq1 = std::priority_queue<Edge::Ptr, vector<Edge::Ptr>, greater_t> ();
+				pq1.pop();
 			}
 		}
 
