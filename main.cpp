@@ -1,3 +1,4 @@
+#include <cassert>
 #include <iomanip>
 #include <iostream>
 #include <limits>
@@ -7,7 +8,6 @@
 #include <sstream>
 #include <string>
 #include <vector>
-#include <cassert>
 
 #define MAX_INT std::numeric_limits<int>::max()
 
@@ -98,7 +98,8 @@ class Graph {
 	// DONE:
 	void convert_to_undirected()
 	{
-		for (auto e : *edge_list_ptr) {
+		for (int i = 0; i < edge_list_ptr->size(); i++) {
+			auto e = (*edge_list_ptr)[i];
 			int f = e.from;
 			int t = e.to;
 			if (arr[f][t] < MAX_INT) {
@@ -118,17 +119,23 @@ class Graph {
 		}
 	}
 
+	void iter_through_node()
+	{
+		for (int i = 0; i < num; i++) {
+			add_all_edge_tobe(i);
+		}
+	}
+
 	void add_all_edge_tobe(int i)
 	{
 		if (if_spanned[i] == true) {
-
 			for (int j = 0; j < num; j++) {
-
 				if (arr[i][j] < MAX_INT) {
-
 					if (if_spanned[j] == false) {
-						//assert(edge_ptr_pool [i * num + j]);
-						pq1.emplace( edge_ptr_pool [i * num + j]);
+						// assert(edge_ptr_pool [i * num
+						// + j]);
+						pq1.emplace(
+						    edge_ptr_pool[i * num + j]);
 					}
 				}
 			}
@@ -143,9 +150,7 @@ class Graph {
 		int spanned_num = 1;
 
 		for (int k = 0; k < num - 1; k++) {
-			for (int i = 0; i < num; i++) {
-				add_all_edge_tobe(i);
-			}
+			iter_through_node();
 			if (pq1.empty()) {
 				continue;
 			}
